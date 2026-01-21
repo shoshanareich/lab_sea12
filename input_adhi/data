@@ -37,9 +37,9 @@
  viscC4Leith=1.5,
  viscC4Leithd=1.5,
  diffKhT=0.0,
- diffKzT=1.46e-5,
+# diffKzT=1.46e-5,
  diffKhS=0.0,
- diffKzS=1.46e-5,
+# diffKzS=1.46e-5,
  implicitFreeSurface=.TRUE.,
  eosType='JMD95Z',
  saltStepping=.TRUE.,
@@ -164,5 +164,6 @@
  bathyFile       = 'bathy_cleaned.bin',
  hydrogThetaFile = 'LevCli_temp_480x384_linearv5.labsea1979',
  hydrogSaltFile  = 'LevCli_salt_480x384_linearv5.labsea1979',
+ diffKrFile     ='diffkr_r4_HR.bin',
  &
 

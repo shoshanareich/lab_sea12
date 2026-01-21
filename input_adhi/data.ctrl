@@ -4,7 +4,7 @@
 # ECCO controlvariables
 # *********************
  &CTRL_NML
- doinitxx = .TRUE.,
+ doInitXX = .TRUE.,
  doMainPack = .TRUE.,
  doMainUnpack = .FALSE.,
  &
@@ -76,14 +76,14 @@
  xx_gentim2d_period(3)     = 86400.0,
  xx_gentim2d_preproc(1,3)='WC01',
  mult_gentim2d(3)          = 1.0,
-#
+##
 # xx_gentim2d_file(4)       = 'xx_snowprecip',
 # xx_gentim2d_weight(4)     = 'ones_64b.bin',
 # xx_gentim2d_startdate1(4) = 20240101,
 # xx_gentim2d_startdate2(4) = 000000,
 # xx_gentim2d_period(4)     = 864000.0,
 ##mult_gentim2d(9)          = 1.0,
-##
+#
  xx_gentim2d_file(5)       = 'xx_swdown',
  xx_gentim2d_weight(5)     = 'dsw_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
  xx_gentim2d_startdate1(5) = 20240104,
@@ -132,6 +132,14 @@
  xx_gentim2d_preproc(1,9)='WC01',
  mult_gentim2d(9)          = 1.0,
 #
+ xx_genarr3d_weight(3) = 'ones_64b.bin',
+ xx_genarr3d_file(3)='xx_diffkr',
+ xx_genarr3d_bounds(1:5,3)=1.E-6,2.E-6,4.E-4,5.E-4,0.,
+ xx_genarr3d_preproc(1,3)='WC01',
+ xx_genarr3d_preproc_c(1,3)='log10ctrl',
+ xx_genarr3d_preproc_r(1,3)=-4.8356,
+ mult_genarr3d(3) = 1.0,
+###
 ##### logdiffkr is diapycnal in log10
 # xx_genarr3d_weight(5) = 'ones_64b.bin',
 # xx_genarr3d_file(5)='xx_diffkr_file',
