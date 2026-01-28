@@ -1,0 +1,15 @@
+# ******************
+# OBSFIT cost f',tion
+# ******************
+ &OBSFIT_NML
+# obsfitDir = 'OBSFIT',
+# obsfitFiles(1) = 'swot_labsea_jan1_jan2_LR_removebad',
+# obsfitFiles(1) = 'swot_obsfit_cycle9_labsea_LONcorrected_removegulf',
+ obsfitFiles(1) = 'swot_obsfit_cycle9_labsea_LONcorrected_LR_removecoast_400m',
+# obsfitFiles(1) = 'swot_obsfit_cycle9_labsea_LONcorrected_removecoast_400m',
+# obsfitFiles(1) = 'swot_test',
+# mult_obsfit(1) = 10,
+ mult_obsfit(1) = 1,
+# mult_obsfit(1) = 0.1,
+ obsfitdoncoutput = .TRUE.,
+ &

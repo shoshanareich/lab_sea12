@@ -1,0 +1,12 @@
+# Ignore everything in the root
+/*
+
+# Allow the .gitignore file itself
+!.gitignore
+
+# allow specific code and input directories
+!code_adhi_2lev_seaice_update
+!code_adlo_2lev_seaice_update
+!input_adhi
+!input_adlo
+!scripts

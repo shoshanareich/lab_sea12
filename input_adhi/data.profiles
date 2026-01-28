@@ -1,0 +1,20 @@
+#
+# ******************
+# PROFILES cost function
+# ******************
+ &PROFILES_NML
+##
+ profilesDir='profiles',
+ profilesDoGenGrid=.FALSE.,
+#
+# profilesfiles(1)= 'swot_obsfit_cycle9_labsea_LONcorrected_LR_removecoast_400m_PROFILES',
+# mult_profiles(1,5)  = 1.,
+# mult_profiles_mean(1)  = 0.,
+##
+ profilesfiles(2)= 'ARGO_WO_2024_PFL_D_labsea_splitcost',
+ mult_profiles(2,1)   = 1.,
+ mult_profiles(2,2)   = 1.,
+ mult_profiles_mean(2)  = 0.,
+#
+ profilesdoncoutput = .TRUE.,
+/

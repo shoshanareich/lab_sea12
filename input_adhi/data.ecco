@@ -1,0 +1,58 @@
+# ******************
+# ECCO cost function
+# ******************
+ &ECCO_COST_NML
+ /
+
+ &ECCO_GENCOST_NML
+#  gencost_barfile(1) = 'm_eta',
+#  gencost_datafile(1) = 'rads_j3_labsea',
+#  gencost_startdate1(1) = 20240101,
+#  gencost_startdate2(1) = 00000,
+#  gencost_avgperiod(1)  = 'day',
+#  gencost_errfile(1) = 'slaerr_03m.bin',
+#  gencost_name(1) = 'sshv4-tp',
+#  gencost_posproc(1,1) = 'smooth',
+#  gencost_spzero(1) = -9999.,
+#  gencost_outputlevel(1)=1,
+#  mult_gencost(1) = 1.,
+###
+#  gencost_datafile(2) = 'rads_sa_labsea',
+#  gencost_startdate1(2) = 20240101,
+#  gencost_startdate2(2) = 00000,
+#  gencost_avgperiod(2)  = 'day',
+#  gencost_errfile(2) = 'slaerr_03m.bin',
+#  gencost_name(2) = 'sshv4-ers',
+#  gencost_posproc(1,2) = 'smooth',
+#  gencost_spzero(2) = -9999.,
+#  gencost_outputlevel(2)=1,
+#  mult_gencost(2) = 1.,
+###
+#  gencost_datafile(3) = 'rads_3a_labsea',
+#  gencost_startdate1(3) = 20240101,
+#  gencost_startdate2(3) = 00000,
+#  gencost_avgperiod(3)  = 'day',
+#  gencost_errfile(3) = 'slaerr_03m.bin',
+#  gencost_name(3) = 'sshv4-gfo',
+#  gencost_posproc(1,3) = 'smooth',
+#  gencost_spzero(3) = -9999.,
+#  gencost_outputlevel(3)=1,
+#  mult_gencost(3) = 1.,
+##
+# gencost_avgperiod(4) = 'day',
+# gencost_barfile(4) = 'm_sst_day',
+# gencost_datafile(4) = 'labsea_SST_field_480x384_rec001_v2',
+## gencost_datafile(4) = 'labsea_SST_fields_linear_80x64_nocoast_rec4548',
+# gencost_errfile(4) = 'sigma_sst_p010402_480x384_r4.bin',
+# gencost_name(4) = 'sst',
+# gencost_posproc(1,4) = 'smooth',
+# gencost_posproc_c(1,4) = 'sshv4_scale_4points.bin',
+## gencost_posproc_i(1,4) = 1,
+# gencost_startdate1(4) = 20240101,
+# gencost_startdate2(4) = 00000,
+# gencost_spmin(4) = -1.8,
+# gencost_spmax(4) = 40.,
+# gencost_spzero(4) = -9999.,
+# gencost_outputlevel(4)=1,
+# mult_gencost(4) = 1.,
+ /
