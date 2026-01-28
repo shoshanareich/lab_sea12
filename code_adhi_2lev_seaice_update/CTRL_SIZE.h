@@ -22,7 +22,7 @@ C     maxCtrlProc  :: number of pre-processing options per ctrl variable
       PARAMETER ( maxCtrlArr2D = 2 )
 
       INTEGER     maxCtrlArr3D
-      PARAMETER ( maxCtrlArr3D = 2 )
+      PARAMETER ( maxCtrlArr3D = 3 )
 
       INTEGER     maxCtrlTim2D
       PARAMETER ( maxCtrlTim2D = 9 )

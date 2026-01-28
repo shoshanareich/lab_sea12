@@ -131,21 +131,24 @@ C initialize
 
          if ( (ProfNo(num_file,bi,bj).GT.0).AND.
      &        (profilesDoNcOutput) ) then
-c need to close the file so that the data is not lost when run finishes
-           err = NF_CLOSE(fidforward(num_file,bi,bj))
-c then re-open it to compute cost function
-           iG=bi+(myXGlobalLo-1)/sNx ! Kludge until unstructered tiles
-           jG=bj+(myYGlobalLo-1)/sNy ! Kludge until unstructered tiles
-           IL  = ILNBLNK( profilesfiles(num_file) )
-           write(profilesfile,'(a)')
-     &     profilesfiles(num_file)(1:IL)
-           IL  = ILNBLNK( profilesfile )
-           JL  = ILNBLNK( profilesDir )
-           write(fnameequinc,'(3a,2(i3.3,a))')
-     &     profilesDir(1:JL),profilesfile(1:IL),'.',iG,'.',jG,'.equi.nc'
-c
-           err = NF_OPEN(fnameequinc,NF_NOWRITE,
-     &     fidforward(num_file,bi,bj))
+           err = NF_SYNC( fidforward(num_file,bi,bj) )
+           call PROFILES_NF_ERROR( 'COST: NF_SYNC fidforward',
+     &             err,bi,bj,myThid )
+CSRc need to close the file so that the data is not lost when run finishes
+CSR           err = NF_CLOSE(fidforward(num_file,bi,bj))
+CSRc then re-open it to compute cost function
+CSR           iG=bi+(myXGlobalLo-1)/sNx ! Kludge until unstructered tiles
+CSR           jG=bj+(myYGlobalLo-1)/sNy ! Kludge until unstructered tiles
+CSR           IL  = ILNBLNK( profilesfiles(num_file) )
+CSR           write(profilesfile,'(a)')
+CSR     &     profilesfiles(num_file)(1:IL)
+CSR           IL  = ILNBLNK( profilesfile )
+CSR           JL  = ILNBLNK( profilesDir )
+CSR           write(fnameequinc,'(3a,2(i3.3,a))')
+CSR     &     profilesDir(1:JL),profilesfile(1:IL),'.',iG,'.',jG,'.equi.nc'
+CSRc
+CSR           err = NF_OPEN(fnameequinc,NF_NOWRITE,
+CSR     &     fidforward(num_file,bi,bj))
          endif
 
 C find the vertical indices
@@ -407,21 +410,25 @@ C    &         access  = 'sequential'   )
 
           if ( (ProfNo(num_file,bi,bj).GT.0).AND.
      &         (profilesDoNcOutput) ) then
-c need to close the file so that the data is not lost when run finishes
-           err = NF_CLOSE(fidforward(num_file,bi,bj))
-c then re-open it to compute cost function
-           iG=bi+(myXGlobalLo-1)/sNx ! Kludge until unstructered tiles
-           jG=bj+(myYGlobalLo-1)/sNy ! Kludge until unstructered tiles
-           IL  = ILNBLNK( profilesfiles(num_file) )
-           write(profilesfile,'(a)')
-     &     profilesfiles(num_file)(1:IL)
-           IL  = ILNBLNK( profilesfile )
-           JL  = ILNBLNK( profilesDir )
-           write(fnameequinc,'(3a,2(i3.3,a))')
-     &     profilesDir(1:JL),profilesfile(1:IL),'.',iG,'.',jG,'.equi.nc'
-c
-           err = NF_OPEN(fnameequinc,NF_NOWRITE,
-     &     fidforward(num_file,bi,bj))
+C Write data from buffer to .nc file
+           err = NF_SYNC( fidforward(num_file,bi,bj) )
+           call PROFILES_NF_ERROR( 'COST: NF_SYNC fidforward',
+     &             err,bi,bj,myThid )
+CSRc need to close the file so that the data is not lost when run finishes
+CSR           err = NF_CLOSE(fidforward(num_file,bi,bj))
+CSRc then re-open it to compute cost function
+CSR           iG=bi+(myXGlobalLo-1)/sNx ! Kludge until unstructered tiles
+CSR           jG=bj+(myYGlobalLo-1)/sNy ! Kludge until unstructered tiles
+CSR           IL  = ILNBLNK( profilesfiles(num_file) )
+CSR           write(profilesfile,'(a)')
+CSR     &     profilesfiles(num_file)(1:IL)
+CSR           IL  = ILNBLNK( profilesfile )
+CSR           JL  = ILNBLNK( profilesDir )
+CSR           write(fnameequinc,'(3a,2(i3.3,a))')
+CSR     &     profilesDir(1:JL),profilesfile(1:IL),'.',iG,'.',jG,'.equi.nc'
+CSRc
+CSR           err = NF_OPEN(fnameequinc,NF_NOWRITE,
+CSR     &     fidforward(num_file,bi,bj))
           endif
 
           do prof_num=1,NOBSGLOB
