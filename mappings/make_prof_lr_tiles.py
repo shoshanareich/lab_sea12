@@ -21,7 +21,7 @@ iter = sys.argv[1]
 ext = sys.argv[2]
 
 run_dir = '/scratch/shoshi/labsea_MG_12/assim_argo_MG/run_adhi_it' + iter + ext + '/'
-run_dir_lo = '/scratch/shoshi/labsea_MG_12/assim_argo_MG/run_adlo_it' + iter + ext + '/'
+#run_dir_lo = '/scratch/shoshi/labsea_MG_12/assim_argo_MG/run_adlo_it' + iter + ext + '/'
 
 grid_dir_hr = '/scratch/shoshi/labsea_MG_12/grid_hires/'
 grid_dir_lr = '/scratch/shoshi/labsea_MG_12/grid_lores/'
