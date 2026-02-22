@@ -73,7 +73,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp binaries into workdir_hi
   # change data.ctrl
   # cp xx_[ctrl] adjustments if iter > 0
-  ${rootdir}/link_hires.sh $iter $ext2 $builddir_hi 
+  ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -99,9 +99,9 @@ while [ ! ${iter} -gt $itermax ]; do
   source $(conda info --base)/etc/profile.d/conda.sh
   conda activate py38
   # create low-res xx_[ctrl]
-  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" ""
+  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir"
   ## profiles retiling 
-  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" 
+  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" 
   conda deactivate
 
   cd $workdir_lo
@@ -109,7 +109,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp binaries into workdir_lo
   # cp ONLINE low-res cost, misfit, barfiles, and xx_[ctrl]
   # create data.optim
-  ${rootdir}/link_lores.sh $iter $workdir_hi $builddir_lo
+  ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
   
   #---  run  --------
   \rm -f mitgcmuv*
@@ -224,7 +224,7 @@ EOF
 echo $(printf "%04d" $((iter+1)))  # "000$((iter+1))"
 source $(conda info --base)/etc/profile.d/conda.sh
 conda activate py38
-python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter+1))) #"000$((iter+1))" $interp_type
+python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter+1))) $workdir_pup  #"000$((iter+1))" $interp_type
 conda deactivate
 
 #  let iter=6

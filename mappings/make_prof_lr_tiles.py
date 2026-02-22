@@ -13,10 +13,11 @@ fnames = [fname, 'ad'+fname]
 
 iter = sys.argv[1]
 ext = sys.argv[2]
+rundirs = sys.argv[3]
 
 root_dir = '/scratch/08382/shoshi/labsea_runs/'
 
-run_dir = root_dir + 'assim_argo_MG/run_adhi_it' + iter + ext + '/'
+run_dir = rundirs + '/run_adhi_it' + iter + ext + '/'
 
 forward_files = sorted(glob.glob(f"{run_dir + 'profiles/'}{fname}.*.equi.nc"))
 all_tile_datasets = []
