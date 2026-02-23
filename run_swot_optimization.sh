@@ -38,7 +38,8 @@ export I_MPI_DEBUG=4
 nprocs_hr=180
 nprocs_lr=16
 
-iter=0
+#iter=0
+iter=1
 itermax=10
 costfactor=0.95
 

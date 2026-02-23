@@ -53,7 +53,7 @@ if [ -f "$dirhires/costfinal_lo" ]; then
 else
     cp "$dirhires/costfinal" ./costfinal
 fi
-#mkdir profiles/
+mkdir profiles/
 cp -r $dirhires/obs_LR_equi/* ./
 cp -r $dirhires/prof_LR_equi/* ./profiles/
 

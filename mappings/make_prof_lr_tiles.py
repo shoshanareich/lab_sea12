@@ -113,7 +113,8 @@ hr_all['prof_LR_tile'] = (['iPROF'], np.array([lr_ocean_map.get(t, -999) for t i
 out_dir = os.path.join(run_dir, 'prof_LR_equi')
 os.makedirs(out_dir, exist_ok=True)
 
-vars_to_keep = ['prof_ind_glob', 'prof_T', 'prof_S', 'prof_Tmask', 'prof_Smask']
+vars_to_keep = ['prof_ind_glob', 'prof_ssh', 'prof_sshmask']
+#vars_to_keep = ['prof_ind_glob', 'prof_T', 'prof_S', 'prof_Tmask', 'prof_Smask']
 grouped = hr_all.groupby('prof_LR_tile')
 
 for tile_num, tile_ds in grouped:
