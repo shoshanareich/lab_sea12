@@ -74,6 +74,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # change data.ctrl
   # cp xx_[ctrl] adjustments if iter > 0
   ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
+  rm data.ecco
+  rm data.pkg
+  mv data.ecco_rads data.ecco
+  mv data.pkg_rads data.pkg
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -99,7 +103,7 @@ while [ ! ${iter} -gt $itermax ]; do
   source $(conda info --base)/etc/profile.d/conda.sh
   conda activate py38
   # create low-res xx_[ctrl]
-  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" 
+  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir"
   ## cost for ecco pkg 
   python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" 
   conda deactivate
@@ -110,6 +114,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp ONLINE low-res cost, misfit, barfiles, and xx_[ctrl]
   # create data.optim
   ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
+  rm data.ecco
+  rm data.pkg
+  mv data.ecco_rads data.ecco
+  mv data.pkg_rads data.pkg
   
   #---  run  --------
   \rm -f mitgcmuv*
@@ -189,6 +197,10 @@ EOF
   # use lo build until figure out why we're not getting xx_[].effective
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
   ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
+  rm data.ecco
+  rm data.pkg
+  mv data.ecco_rads data.ecco
+  mv data.pkg_rads data.pkg
 
   #---  run  --------
   \rm -f mitgcmuv*
