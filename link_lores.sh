@@ -48,8 +48,11 @@ ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
 rm data.diagnostics
 cp ${datadir}/input_adhi/data.diagnostics .
 
-cp $dirhires/costfinal_lo ./costfinal
-cp $dirhires/costfinal ./costfinal
+if [ -f "$dirhires/costfinal_lo" ]; then
+    cp "$dirhires/costfinal_lo" ./costfinal
+else
+    cp "$dirhires/costfinal" ./costfinal
+fi
 #mkdir profiles/
 cp -r $dirhires/obs_LR_equi/* ./
 cp -r $dirhires/prof_LR_equi/* ./profiles/

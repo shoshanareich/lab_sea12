@@ -5,6 +5,8 @@ sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/M
 #sys.path.append('/home/shoshi/MITgcm_c68r/MITgcm/utils/python/MITgcmutils')
 from MITgcmutils import rdmds
 from file_utils import *
+from read_write import *
+
 
 nx=120
 ny=96
@@ -44,9 +46,9 @@ def bin_avg(fld, etan=False):
     return fld_lr
 
 
-def write_float64(fout,fld):
-    with open(fout, 'wb') as f:
-        np.array(fld, dtype=">f8").tofile(f)
+#def write_float64(fout,fld):
+#    with open(fout, 'wb') as f:
+#        np.array(fld, dtype=">f8").tofile(f)
 
 
 # read in high-res xx, adxx, m_, adm_
@@ -55,6 +57,7 @@ xx_files = get_files(dirrun_hr, 'xx')
 adxx_files = get_files(dirrun_hr, 'adxx')
 m_files = get_files(dirrun_hr, 'm')
 adm_files = get_files(dirrun_hr, 'adm')
+
 
 # bin-avg to low-res
 for f in xx_files.union(xx_files, adxx_files, m_files, adm_files):
@@ -92,28 +95,35 @@ for f in xx_files.union(xx_files, adxx_files, m_files, adm_files):
 #
 
 # if running ecco pkg
-if os.path.exists(dirrun_hr + 'm_eta.000000' + iter + '.data' ):
-    m_eta = rdmds(dirrun_hr + 'm_eta.000000' + iter + '.data')
-    cost_hr = 0
-    cost_lr
-    for rads in ['rads_3a_labsea_2024', 'rads_j3_labsea_2024', 'rads_sa_labsea_2024']
-        obs = read_float32(dirrun_hr + rads).reshape(366, nyh, nxh)[4:70] # calendar days of run
 
-        obs[obs < -999] = np.nan
-        misfit = m_eta - obs
-        misfit[misfit == 0] = np.nan
+if os.path.exists(dirrun_hr + 'm_eta.000000' + iter + '.data' ):
+
+    m_eta = rdmds(dirrun_hr + 'm_eta.000000' + iter )
+    cost_hr = 0
+    cost_lr = 0
+
+    for f in ['tp', 'ers', 'gfo']:
         
+        misfit = rdmds(dirrun_hr + 'sladiff_' + f + '_raw')
+
         ### confirm high-res cost
         sigma = 0.03
         cost = np.nansum((misfit / sigma)**2)
-        print(f'rads cost {cost}')
+        print(f'{f} cost {cost}')
         cost_hr += cost
 
         misfit_lr = bin_avg(misfit) * maskc_lr[0]
         cost_lr += np.nansum((misfit_lr * maskc_lr[0] / sigma) **2)
-    
+
+        slaobs = rdmds(dirrun_hr + 'slaobs_' + f + '_raw')
+        slaobs_lr = bin_avg(slaobs) * maskc_lr[0]
+       
+        write_float64(dirrun_lr + f + '.data', xx_lr)
+        write_float64(dirrun_lr + 'sladiff_' + f + '_raw' + '.data', misfit_lr)
+        write_float64(dirrun_lr + 'slaobs_' + f + '_raw' '.data', slaobs_lr)
+
     print(f'rads total HR cost {cost_hr}')
     print(f'rads total LR cost = {cost_lr}')
-    
-    with open(dirrun_hr + 'costfinal_lo', 'w') as f:
-        f.write(str(cost_lr))
+
+    with open(dirrun_hr + 'costfinal_lo', 'w') as file:
+        file.write(str(cost_lr))

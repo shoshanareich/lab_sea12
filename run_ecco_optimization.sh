@@ -105,7 +105,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # create low-res xx_[ctrl]
   python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir"
   ## cost for ecco pkg 
-  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" 
+  #python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" 
   conda deactivate
 
   cd $workdir_lo
