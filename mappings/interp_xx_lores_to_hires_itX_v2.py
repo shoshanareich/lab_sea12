@@ -29,7 +29,7 @@ griddir_hr = dirroot + 'grid_hires/'
 #dirrun_hr = dirroot + 'run_adhi_it' + iter + '/'
 
 dirrun_pup = sys.argv[2] 
-dir_out = dirrun_pup + 'xx_hires/'
+dir_out = dirrun_pup + '/xx_hires/'
 
 # read in high-res grid and low-res grid
 xc_lr = rdmds(griddir_lr + 'XC')

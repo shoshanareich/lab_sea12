@@ -39,7 +39,7 @@ nprocs_hr=180
 nprocs_lr=16
 
 #iter=0
-iter=1
+iter=2
 itermax=10
 costfactor=0.95
 
