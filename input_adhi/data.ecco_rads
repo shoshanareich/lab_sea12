@@ -16,7 +16,7 @@
   gencost_spzero(1) = -9999.,
   gencost_outputlevel(1)=1,
   mult_gencost(1) = 1.,
-##
+#
   gencost_datafile(2) = 'rads_sa_labsea',
   gencost_startdate1(2) = 20240101,
   gencost_startdate2(2) = 00000,

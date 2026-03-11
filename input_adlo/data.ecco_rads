@@ -29,8 +29,8 @@
   gencost_name(2) = 'sshv4-ers',
   gencost_spzero(2) = -9999.,
   gencost_outputlevel(2)=1,
-  gencost_posproc(1,2)='smooth',
-  gencost_posproc_i(1,2)=1000,
+#  gencost_posproc(1,2)='smooth',
+#  gencost_posproc_i(1,2)=1000,
 #  mult_gencost(2) = 10.,
   mult_gencost(2) = 1.,
 ##
@@ -42,8 +42,8 @@
   gencost_name(3) = 'sshv4-gfo',
   gencost_spzero(3) = -9999.,
   gencost_outputlevel(3)=1,
-  gencost_posproc(1,3)='smooth',
-  gencost_posproc_i(1,3)=1000,
+#  gencost_posproc(1,3)='smooth',
+#  gencost_posproc_i(1,3)=1000,
 #  mult_gencost(3) = 10.,
   mult_gencost(3) = 1.,
 #

@@ -25,6 +25,7 @@ iter = sys.argv[1] # sys.argv[0] is name of python file
 print(iter)
 ext = sys.argv[2]
 rundirs = sys.argv[3]
+rads_cost = sys.argv[4]
 
 dirrun_lr = rundirs + '/run_adlo_it' + iter + ext + '/' #'_5day_ASTEwts/'
 dirrun_hr = rundirs + '/run_adhi_it' + iter + ext + '/' #'_5day_ASTEwts/'
@@ -42,7 +43,9 @@ def bin_avg(fld, etan=False):
 #        fld = fld.reshape(fld.shape[0], ny, factor, nx, factor)
 #        fld_lr = np.nanmean(fld, axis=(2,4))
     fld = fld.reshape(fld.shape[0], ny, factor, nx, factor)
+    fld[fld == 0] = np.nan
     fld_lr = np.nanmean(fld, axis=(2,4))
+    fld_lr[np.isnan(fld_lr)] = 0
     return fld_lr
 
 
@@ -60,12 +63,13 @@ adm_files = get_files(dirrun_hr, 'adm')
 
 
 # bin-avg to low-res
+xx_cost = 0
 for f in xx_files.union(xx_files, adxx_files, m_files, adm_files):
     print(f)
     xx = rdmds(dirrun_hr + f)
     xx[xx == 0] = np.nan
     
-    etan = 'etan' in f
+    etan = ('etan' in f) or ('m_eta' in f)
     if xx.shape[0] == nz:
         xx_lr = bin_avg(xx, etan=etan) * maskc_lr
     else:
@@ -74,7 +78,9 @@ for f in xx_files.union(xx_files, adxx_files, m_files, adm_files):
     xx_lr[np.isnan(xx_lr)] = 0
     write_float64(dirrun_lr + f + '.data', xx_lr)
 
-
+    if f in xx_files:
+        print(np.nansum(xx_lr**2))
+        xx_cost += np.nansum(xx_lr**2)
 
 
 #
@@ -119,11 +125,13 @@ if os.path.exists(dirrun_hr + 'm_eta.000000' + iter + '.data' ):
         slaobs_lr = bin_avg(slaobs) * maskc_lr[0]
        
         write_float64(dirrun_lr + f + '.data', xx_lr)
-        write_float64(dirrun_lr + 'sladiff_' + f + '_raw' + '.data', misfit_lr)
-        write_float64(dirrun_lr + 'slaobs_' + f + '_raw' '.data', slaobs_lr)
+        write_float32(dirrun_lr + 'sladiff_' + f + '_raw' + '.data', misfit_lr)
+        write_float32(dirrun_lr + 'slaobs_' + f + '_raw' '.data', slaobs_lr)
 
-    print(f'rads total HR cost {cost_hr}')
-    print(f'rads total LR cost = {cost_lr}')
+    if rads_cost == 'True':
+        print(f'rads total HR cost {cost_hr}')
+        print(f'rads total LR cost = {cost_lr}')
+        print(f'xx total LR cost = {xx_cost}')
 
-    with open(dirrun_hr + 'costfinal_lo', 'w') as file:
-        file.write(str(cost_lr))
+        with open(dirrun_hr + 'costfinal_lo', 'w') as file:
+            file.write(str(cost_lr + xx_cost))

@@ -11,10 +11,10 @@
  mult_profiles(1,5)  = 1.,
  mult_profiles_mean(1)  = 0.,
 #
-# profilesfiles(2)= 'ARGO_WO_2024_PFL_D_labsea_splitcost',
-# mult_profiles(2,1)   = 10.,
-# mult_profiles(2,2)   = 1.,
-# mult_profiles_mean(2)  = 0.,
+ profilesfiles(2)= 'ARGO_WO_2024_PFL_D_labsea_splitcost',
+ mult_profiles(2,1)   = 0.,
+ mult_profiles(2,2)   = 0.,
+ mult_profiles_mean(2)  = 0.,
 #
  profilesdoncoutput = .TRUE.,
 /

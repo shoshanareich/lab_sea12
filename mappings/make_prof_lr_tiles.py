@@ -8,13 +8,15 @@ import xmitgcm
 sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
 from MITgcmutils import rdmds
 
-#fname = 'ARGO_WO_2024_PFL_D_labsea_splitcost'
-fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES'
-fnames = [fname, 'ad'+fname]
 
 iter = sys.argv[1]
 ext = sys.argv[2]
 rundirs = sys.argv[3]
+fname = sys.argv[4]
+
+#fname = 'ARGO_WO_2024_PFL_D_labsea_splitcost'
+#fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES'
+fnames = [fname, 'ad'+fname]
 
 root_dir = '/scratch/08382/shoshi/labsea_runs/'
 
@@ -113,8 +115,10 @@ hr_all['prof_LR_tile'] = (['iPROF'], np.array([lr_ocean_map.get(t, -999) for t i
 out_dir = os.path.join(run_dir, 'prof_LR_equi')
 os.makedirs(out_dir, exist_ok=True)
 
-vars_to_keep = ['prof_ind_glob', 'prof_ssh', 'prof_sshmask']
-#vars_to_keep = ['prof_ind_glob', 'prof_T', 'prof_S', 'prof_Tmask', 'prof_Smask']
+if 'swot' in fname:
+    vars_to_keep = ['prof_ind_glob', 'prof_ssh', 'prof_sshmask']
+elif 'ARGO' in fname:
+    vars_to_keep = ['prof_ind_glob', 'prof_T', 'prof_S', 'prof_Tmask', 'prof_Smask']
 grouped = hr_all.groupby('prof_LR_tile')
 
 for tile_num, tile_ds in grouped:

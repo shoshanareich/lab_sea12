@@ -38,7 +38,7 @@ export I_MPI_DEBUG=4
 nprocs_hr=180
 nprocs_lr=16
 
-iter=0
+iter=1
 itermax=10
 costfactor=0.95
 
@@ -75,8 +75,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp xx_[ctrl] adjustments if iter > 0
   ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
   rm data.ecco
+#  rm data.profiles
   rm data.pkg
   mv data.ecco_rads data.ecco
+#  mv data.profiles_rads data.profiles
   mv data.pkg_rads data.pkg
 
   #---  run  --------
@@ -103,9 +105,11 @@ while [ ! ${iter} -gt $itermax ]; do
   source $(conda info --base)/etc/profile.d/conda.sh
   conda activate py38
   # create low-res xx_[ctrl]
-  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir"
+  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "True"
   ## cost for ecco pkg 
   #python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" 
+  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
+  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
   conda deactivate
 
   cd $workdir_lo
@@ -115,8 +119,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # create data.optim
   ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
   rm data.ecco
+#  rm data.profiles
   rm data.pkg
   mv data.ecco_rads data.ecco
+#  mv data.profiles_rads data.profiles
   mv data.pkg_rads data.pkg
   
   #---  run  --------
@@ -198,8 +204,10 @@ EOF
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
   ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
   rm data.ecco
+#  rm data.profiles
   rm data.pkg
   mv data.ecco_rads data.ecco
+#  mv data.profiles_rads data.profiles
   mv data.pkg_rads data.pkg
 
   #---  run  --------

@@ -8,7 +8,7 @@
  profilesDoGenGrid=.FALSE.,
 #
  profilesfiles(1)= 'swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES',
- mult_profiles(1,5)  = 1.,
+ mult_profiles(1,5)  = 0.,
  mult_profiles_mean(1)  = 0.,
  mult_profiles_mean(5)  = 0.,
 #
