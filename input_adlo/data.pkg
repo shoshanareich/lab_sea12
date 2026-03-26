@@ -10,7 +10,7 @@
 ## useMNC    = .TRUE.,
   useECCO   = .TRUE.,
   useProfiles = .TRUE.,
-#  useOBSFIT  = .TRUE.,
+  useOBSFIT  = .TRUE.,
 #  useGrdchk = .TRUE.,
 #  useSMOOTH = .TRUE.,
  &

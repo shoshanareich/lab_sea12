@@ -39,7 +39,7 @@ nprocs_hr=180
 nprocs_lr=16
 
 #iter=0
-iter=1
+iter=0
 itermax=10
 costfactor=0.95
 
@@ -102,8 +102,9 @@ while [ ! ${iter} -gt $itermax ]; do
   # create low-res xx_[ctrl]
   python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "False"
   ## profiles retiling 
- # python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" 
-  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
+#  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
   python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
   conda deactivate
 

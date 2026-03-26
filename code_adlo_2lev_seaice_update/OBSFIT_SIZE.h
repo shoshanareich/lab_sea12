@@ -34,7 +34,8 @@ C (not only "valid" samples)
 
 C This is the max number of "valid" samples in each tile
       INTEGER NSAMP_PER_TILE_MAX
-      PARAMETER ( NSAMP_PER_TILE_MAX=5000 )
+c      PARAMETER ( NSAMP_PER_TILE_MAX=5000 )
+      PARAMETER ( NSAMP_PER_TILE_MAX=180000 )
 
 C This number is 1 unless observations are spatial averages/integrals
       INTEGER NSAMP_PER_OBS_MAX

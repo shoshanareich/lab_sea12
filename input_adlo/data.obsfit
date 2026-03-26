@@ -11,5 +11,7 @@
 # mult_obsfit(1) = 10,
  mult_obsfit(1) = 1,
 # mult_obsfit(1) = 0.1,
+ obsfitFiles(2) = 'rads_20240101_20240308',
+ mult_obsfit(2) = 0.0,
  obsfitdoncoutput = .TRUE.,
  &

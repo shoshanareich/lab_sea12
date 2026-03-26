@@ -8,12 +8,14 @@ import xmitgcm
 sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
 from MITgcmutils import rdmds
 
-fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3'
-fnames = [fname, 'ad'+fname]
+#fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3'
+#fnames = [fname, 'ad'+fname]
 
 iter = sys.argv[1]
 ext = sys.argv[2]
 rundirs = sys.argv[3]
+fname = sys.argv[4]
+fnames = [fname, 'ad'+fname]
 
 root_dir = '/scratch/08382/shoshi/labsea_runs/'
 
@@ -85,13 +87,13 @@ for j in range(npy_lr):
 
 
 ### Map to Lo-Res Tiles
-ds_argo = xr.open_dataset(run_dir + fname + '.nc')
+ds_obs = xr.open_dataset(run_dir + fname + '.nc')
 hr_indices = hr_all.iSAMPLE.values
-argo_sub = ds_argo.isel(iSAMPLE=hr_indices - 1).copy()
+ds_obs_sub = ds_obs.isel(iSAMPLE=hr_indices - 1).copy()
 
-lons, lats = argo_sub.sample_lon.values, argo_sub.sample_lat.values
+lons, lats = ds_obs_sub.sample_lon.values, ds_obs_sub.sample_lat.values
 dx = dy = 0.3333333333
-assigned_tile_id = np.zeros(len(argo_sub.iSAMPLE), dtype=int)
+assigned_tile_id = np.zeros(len(ds_obs_sub.iSAMPLE), dtype=int)
 
 for j in range(npy_lr):
     for i in range(npx_lr):
