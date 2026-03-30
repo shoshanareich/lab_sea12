@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J labseaMGargo 
-#SBATCH -o labseaMGargo.%j.out
-#SBATCH -e labseaMGargo.%j.err
+#SBATCH -J labseaMGrads
+#SBATCH -o labseaMGrads.%j.out
+#SBATCH -e labseaMGrads.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -48,7 +48,7 @@ jobfile=run_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_MG/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_rads_MG/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -99,9 +99,12 @@ while [ ! ${iter} -gt $itermax ]; do
   source $(conda info --base)/etc/profile.d/conda.sh
   conda activate py38
   # create low-res xx_[ctrl]
-  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir"
+  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "False"
   ## profiles retiling 
-  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
+#  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
+  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
   conda deactivate
 
   cd $workdir_lo

@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J labseaMGrads
-#SBATCH -o labseaMGrads.%j.out
-#SBATCH -e labseaMGrads.%j.err
+#SBATCH -J labseaMGradsecco
+#SBATCH -o labseaMGradsecco.%j.out
+#SBATCH -e labseaMGradsecco.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -38,7 +38,7 @@ export I_MPI_DEBUG=4
 nprocs_hr=180
 nprocs_lr=16
 
-iter=1
+iter=0
 itermax=10
 costfactor=0.95
 
@@ -48,7 +48,7 @@ jobfile=run_ecco_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_rads_MG/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_rads_MG_ecco/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -75,11 +75,9 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp xx_[ctrl] adjustments if iter > 0
   ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
   rm data.ecco
-#  rm data.profiles
-  rm data.pkg
+  rm data.obsfit
   mv data.ecco_rads data.ecco
-#  mv data.profiles_rads data.profiles
-  mv data.pkg_rads data.pkg
+  mv data.obsfit_rads data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -106,9 +104,9 @@ while [ ! ${iter} -gt $itermax ]; do
   conda activate py38
   # create low-res xx_[ctrl]
   python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "True"
-  ## cost for ecco pkg 
-  #python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" 
-  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
+  ## profiles retiling 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
   python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
   conda deactivate
 
@@ -119,11 +117,9 @@ while [ ! ${iter} -gt $itermax ]; do
   # create data.optim
   ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
   rm data.ecco
-#  rm data.profiles
-  rm data.pkg
+  rm data.obsfit
   mv data.ecco_rads data.ecco
-#  mv data.profiles_rads data.profiles
-  mv data.pkg_rads data.pkg
+  mv data.obsfit_rads data.obsfit
   
   #---  run  --------
   \rm -f mitgcmuv*
@@ -204,11 +200,9 @@ EOF
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
   ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
   rm data.ecco
-#  rm data.profiles
-  rm data.pkg
+  rm data.obsfit
   mv data.ecco_rads data.ecco
-#  mv data.profiles_rads data.profiles
-  mv data.pkg_rads data.pkg
+  mv data.obsfit_rads data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
