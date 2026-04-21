@@ -9,9 +9,9 @@
 # obsfitFiles(1) = 'swot_obsfit_cycle9_labsea_LONcorrected_removecoast_400m',
 # obsfitFiles(1) = 'swot_test',
 # mult_obsfit(1) = 10,
- mult_obsfit(1) = 0.0,
+ mult_obsfit(1) = 1.0,
 # mult_obsfit(1) = 0.1,
- obsfitFiles(2) = 'rads_20240101_20240308',
- mult_obsfit(2) = 1.0,
+ obsfitFiles(2) = 'rads_2024_obsfit',
+ mult_obsfit(2) = 0.0,
  obsfitdoncoutput = .TRUE.,
  &
