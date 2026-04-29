@@ -19,7 +19,7 @@
 #  gencost_posproc(1,1)='smooth',
 #  gencost_posproc_i(1,1)=1000,
 #  mult_gencost(1) = 100.,
-  mult_gencost(1) = 0.,
+  mult_gencost(1) = 1.,
 #
   gencost_datafile(2) = 'rads_sa_labsea_96x120_v2',
   gencost_startdate1(2) = 20240101,
@@ -32,7 +32,7 @@
 #  gencost_posproc(1,2)='smooth',
 #  gencost_posproc_i(1,2)=1000,
 #  mult_gencost(2) = 10.,
-  mult_gencost(2) = 0.,
+  mult_gencost(2) = 1.,
 ##
   gencost_datafile(3) = 'rads_3a_labsea_96x120_v2',
   gencost_startdate1(3) = 20240101,
@@ -45,7 +45,7 @@
 #  gencost_posproc(1,3)='smooth',
 #  gencost_posproc_i(1,3)=1000,
 #  mult_gencost(3) = 10.,
-  mult_gencost(3) = 0.,
+  mult_gencost(3) = 1.,
 #
 ### gencost_datafile(4) = 'input_mdt/mdt_dtu13_fill9iU42Ef_noStLA.bin',
 ## gencost_datafile(4) = 'mdt_dtu22.bin',

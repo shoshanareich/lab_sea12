@@ -1,13 +1,16 @@
-rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
-datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
-scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG/
+#rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
+#datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
+#scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG/
+rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+#scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_MG/
 
 #iter=0
 #builddir=${rootdir}/build_adlo_2lev_seaice_update_mpi/
 iter=$1
 dirhires=$2
-#
-builddir=$3
+scratchdir=$3
+builddir=$4
 
 mkdir -p ./diags/
 
@@ -23,23 +26,38 @@ ln -s ${datadir}/input_binaries_lores/diffkr_r4.bin .
 ln -s ${datadir}/input_binaries_exf/* .
 ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
 ln -s ${datadir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
+ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
+ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask.nc .
+ln -s ${datadir}/input_binaries_hires/swot*.nc .
+ln -s ${datadir}/input_binaries_hires/rads_20240101_20240308.nc .
+ln -s ${datadir}/input_binaries_hires/rads*.nc .
+ln -s ${datadir}/input_binaries_lores/rads_*_v2_2024* .
 ln -s ${datadir}/input_weights_lores/*_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin .
 ln -s ${datadir}/input_binaries_lores/rads_j3_labsea_96x120_v2_2024 .
 ln -s ${datadir}/input_binaries_lores/slaerr_03m.bin .
 ln -s ${datadir}/input_weights_lores/*fromASTE_*.bin .
-cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.meta pickup_seaice.0000000001.meta
-cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.data pickup_seaice.0000000001.data
-cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.meta pickup.0000000001.meta
-cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.data pickup.0000000001.data
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.meta pickup_seaice.0000000001.meta
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.data pickup_seaice.0000000001.data
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.meta pickup.0000000001.meta
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.data pickup.0000000001.data
+cp ${datadir}/input_binaries_lores/pickup_seaice.0000025920.meta pickup_seaice.0000000001.meta
+cp ${datadir}/input_binaries_lores/pickup_seaice.0000025920.data pickup_seaice.0000000001.data
+cp ${datadir}/input_binaries_lores/pickup.0000025920.meta pickup.0000000001.meta
+cp ${datadir}/input_binaries_lores/pickup.0000025920.data pickup.0000000001.data
 
 mkdir jra3q
-ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+#ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
 rm data.diagnostics
 cp ${datadir}/input_adhi/data.diagnostics .
 
-cp $dirhires/costfinal_lo ./costfinal
-cp $dirhires/costfinal ./costfinal
+if [ -f "$dirhires/costfinal_lo" ]; then
+    cp "$dirhires/costfinal_lo" ./costfinal
+else
+    cp "$dirhires/costfinal" ./costfinal
+fi
 mkdir profiles/
+cp -r $dirhires/obs_LR_equi/* ./
 cp -r $dirhires/prof_LR_equi/* ./profiles/
 
 
@@ -49,8 +67,8 @@ cp -r $dirhires/tapes ./
 
 ##--- 5. linking xx_ fields ------
 if [ ${iter} -lt 1 ]; then
-  sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
-  sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
+  sed -i -e 's/'"doinitxx = .TRUE."'/'"doinitxx = .FALSE."'/g' data.ctrl
+  sed -i -e 's/'"doInitXX = .TRUE."'/'"doInitXX = .FALSE."'/g' data.ctrl
   sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
   sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
 else

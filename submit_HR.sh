@@ -1,5 +1,28 @@
-iter=$1
-optimext=$2
+#!/bin/bash -x
+#SBATCH -J labseaMGswot_iter5
+#SBATCH -o labseaMGswot_iter5.%j.out
+#SBATCH -e labseaMGswot_iter5.%j.err
+#SBATCH -t 6:00:00
+#SBATCH -p skx
+#SBATCH -N 6 
+#SBATCH -n 180
+#SBATCH -A OCE23001
+#SBATCH --mail-user=sreich@utexas.edu
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+module purge; module load intel/25.1 impi/21.15 netcdf/4.9.2 hdf5/1.14.6
+
+#ulimit -s hard
+#ulimit -u hard
+ulimit -s unlimited
+ulimit -v unlimited
+#export IBRUN_TASKS_PER_NODE=16
+export I_MPI_DEBUG=4
+
+iter=5
+optimext=0005
+nprocs_hr=180
 
 #--- 2.set dir ------------
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
@@ -8,13 +31,31 @@ optimext=$2
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
 datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG/
-scratchdir=$3
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG/
 dirrun_pup=${scratchdir}/run_adlo_packunpack/
 
 hr_dir_iter0=${scratchdir}/run_adhi_it0000
 
-builddir=$4
+builddir=${rootdir}/build_adhi_2lev_seaice_update_mpi
 
+echo $(printf "%04d" $((iter)))  
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate py38
+python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter))) $dirrun_pup
+conda deactivate
+
+
+ext2=$(printf "%04d" $iter)
+
+
+workdir_hi=${scratchdir}/run_adhi_it${ext2}_halfredux
+
+if [ ! -d $workdir_hi ]; then
+  mkdir -p $workdir_hi;
+fi
+
+cd $workdir_hi
+  
 mkdir diags
 
 #--- 6. NAMELISTS ---------
@@ -27,8 +68,7 @@ ln -s ${datadir}/input_binaries_exf/* .
 ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
 ln -s ${datadir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
 ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
-ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask.nc .
-ln -s ${datadir}/input_binaries_hires/swot*.nc .
+ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES.nc .
 ln -s ${datadir}/input_binaries_hires/rads_20240101_20240308.nc .
 ln -s ${datadir}/input_binaries_hires/rads_* .
 ln -s ${datadir}/input_binaries_lores/slaerr_03m.bin .
@@ -140,5 +180,14 @@ fi
 
 #--- 7. executable --------
 cp -p $builddir/mitgcmuv_ad .
+
+
+set -x
+date > run.MITGCM.timing
+# mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
+ibrun -n ${nprocs_hr} ./mitgcmuv_ad > stdout
+# ibrun -npernode 16 ./mitgcmuv_ad > stdout
+date >> run.MITGCM.timing
+cd ..
 
 

@@ -69,7 +69,7 @@
  useSingleCpuIO=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
- debugLevel=0,
+ debugLevel=-1,
  &
 
 # Elliptic solver parameters
@@ -102,8 +102,10 @@
 # tauCD=172800.,
 # startTime=0.0,
  nIter0=1,
+# 1 day
+# nTimeSteps=72,
 # 5 days
- nTimeSteps=360,
+# nTimeSteps=360,
 # 6 days
 # nTimeSteps=432,
 # 24 days
@@ -111,7 +113,7 @@
 # 31 days
 # nTimeSteps=2232,
 # 63 days 1/4 - 3/6
-# nTimeSteps=4536,
+ nTimeSteps=4536,
 # 10 years 
 # nTimeSteps=262980,
  deltaT=1200.0,
@@ -123,9 +125,9 @@
 # dumpFreq = 86400.,
 # dumpFreq = 1200.,
 # monitorFreq=2592000.,
- monitorFreq=86400.,
- adjMonitorFreq=86400.,
- adjDumpFreq=864000.,
+ monitorFreq=864000.,
+ adjMonitorFreq=864000.,
+ adjDumpFreq=0.,
  &
 
 # Gridding parameters

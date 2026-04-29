@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J swotMG_NACmask
-#SBATCH -o swotMG_NACmask.%j.out
-#SBATCH -e swotMG_NACmask.%j.err
+#SBATCH -J labseaMGargoSummer
+#SBATCH -o labseaMGargoSummer.%j.out
+#SBATCH -e labseaMGargoSummer.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -38,7 +38,7 @@ export I_MPI_DEBUG=4
 nprocs_hr=180
 nprocs_lr=16
 
-iter=0
+iter=1
 itermax=10
 costfactor=0.95
 
@@ -48,7 +48,7 @@ jobfile=run_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG_NACmask/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_MG_summer/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -74,7 +74,30 @@ while [ ! ${iter} -gt $itermax ]; do
   # change data.ctrl
   # cp xx_[ctrl] adjustments if iter > 0
   ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
+
+  # summer
+  rm pickup*
+  cp ${rootdir}/input_binaries_hires/pickup_seaice.0000158400.meta pickup_seaice.0000000001.meta
+  cp ${rootdir}/input_binaries_hires/pickup_seaice.0000158400.data pickup_seaice.0000000001.data
+  cp ${rootdir}/input_binaries_hires/pickup.0000158400.meta pickup.0000000001.meta
+  cp ${rootdir}/input_binaries_hires/pickup.0000158400.data pickup.0000000001.data
+  
+  rm data.cal
+  mv data.cal_summer data.cal
+
+# start from 0 adjustments
+  if [ ${iter} -lt 1 ]; then
+    rm xx_*
+    sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
+    sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
+    sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
+    sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
+  fi
+
+  rm data.profiles
+  rm data.obsfit
+  mv data.profiles_argo data.profiles
+  mv data.obsfit_argo data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -102,7 +125,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # create low-res xx_[ctrl]
   python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "False"
   ## profiles retiling 
-  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3" 
   python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
 #  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
   python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
@@ -114,8 +137,23 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp ONLINE low-res cost, misfit, barfiles, and xx_[ctrl]
   # create data.optim
   ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
   
+  # summer
+  rm pickup*
+  cp ${rootdir}/input_binaries_lores/pickup_seaice.0000039600.meta pickup_seaice.0000000001.meta
+  cp ${rootdir}/input_binaries_lores/pickup_seaice.0000039600.data pickup_seaice.0000000001.data
+  cp ${rootdir}/input_binaries_lores/pickup.0000039600.meta pickup.0000000001.meta
+  cp ${rootdir}/input_binaries_lores/pickup.0000039600.data pickup.0000000001.data
+  
+  rm data.cal
+  mv data.cal_summer data.cal
+
+# start from 0 adjustments
+  rm data.profiles
+  rm data.obsfit
+  mv data.profiles_argo data.profiles
+  mv data.obsfit_argo data.obsfit
+
   #---  run  --------
   \rm -f mitgcmuv*
   cp -f ${builddir_lo}/mitgcmuv_ad ./
@@ -194,7 +232,22 @@ EOF
   # use lo build until figure out why we're not getting xx_[].effective
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
   ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
+
+  # summer
+  rm pickup*
+  cp ${rootdir}/input_binaries_lores/pickup_seaice.0000039600.meta pickup_seaice.0000000001.meta
+  cp ${rootdir}/input_binaries_lores/pickup_seaice.0000039600.data pickup_seaice.0000000001.data
+  cp ${rootdir}/input_binaries_lores/pickup.0000039600.meta pickup.0000000001.meta
+  cp ${rootdir}/input_binaries_lores/pickup.0000039600.data pickup.0000000001.data
+  
+  rm data.cal
+  mv data.cal_summer data.cal
+
+# start from 0 adjustments
+  rm data.profiles
+  rm data.obsfit
+  mv data.profiles_argo data.profiles
+  mv data.obsfit_argo data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*

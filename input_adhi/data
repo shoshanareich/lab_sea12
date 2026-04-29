@@ -102,15 +102,15 @@
  nIter0=1,
 # nTimeSteps=1,
 # 1 day
-# nTimeSteps=276,
+# nTimeSteps=288,
 # 2 days
 # nTimeSteps=564,
 # 5 days
- nTimeSteps=1440,
+# nTimeSteps=1440,
 # 31 days
 # nTimeSteps=8928,
 # 63 days 1/4 - 3/6
-# nTimeSteps=18144,
+ nTimeSteps=18144,
  deltaT=300.0,
 # deltaTmom=3600.0,
 # deltaTtracer=3600.0,
@@ -122,9 +122,9 @@
  pChkptFreq=2592000.,
  chkptFreq= 0.,
  dumpFreq = 0.,
- monitorFreq=86400.,
- adjMonitorFreq=86400.,
- adjDumpFreq=864000.,
+ monitorFreq=864000.,
+ adjMonitorFreq=864000.,
+ adjDumpFreq=0.,
  &
 
 # Gridding parameters

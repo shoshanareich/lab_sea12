@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J swotMG_NACmask
-#SBATCH -o swotMG_NACmask.%j.out
-#SBATCH -e swotMG_NACmask.%j.err
+#SBATCH -J labseaMGradsecco
+#SBATCH -o labseaMGradsecco.%j.out
+#SBATCH -e labseaMGradsecco.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -42,13 +42,13 @@ iter=0
 itermax=10
 costfactor=0.95
 
-jobfile=run_optimization.bash
+jobfile=run_ecco_optimization.bash
 
 #--- set dir ------------
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG_NACmask/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_rads_MG_ecco/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -74,7 +74,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # change data.ctrl
   # cp xx_[ctrl] adjustments if iter > 0
   ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
+  rm data.ecco
+  rm data.obsfit
+  mv data.ecco_rads data.ecco
+  mv data.obsfit_rads data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -100,11 +103,10 @@ while [ ! ${iter} -gt $itermax ]; do
   source $(conda info --base)/etc/profile.d/conda.sh
   conda activate py38
   # create low-res xx_[ctrl]
-  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "False"
+  python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "True"
   ## profiles retiling 
-  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask" 
+  python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3" 
   python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
-#  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
   python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
   conda deactivate
 
@@ -114,7 +116,10 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp ONLINE low-res cost, misfit, barfiles, and xx_[ctrl]
   # create data.optim
   ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
+  rm data.ecco
+  rm data.obsfit
+  mv data.ecco_rads data.ecco
+  mv data.obsfit_rads data.obsfit
   
   #---  run  --------
   \rm -f mitgcmuv*
@@ -194,7 +199,10 @@ EOF
   # use lo build until figure out why we're not getting xx_[].effective
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
   ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
-  sed -i "s/swot_obsfit_cycles_9thru11_labsea_L3v3/&_NACmask/" data.obsfit
+  rm data.ecco
+  rm data.obsfit
+  mv data.ecco_rads data.ecco
+  mv data.obsfit_rads data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
