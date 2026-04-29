@@ -6,9 +6,9 @@
 
 # allow specific code and input directories
 !code_adhi_2lev_seaice_update
-!code_adlo_2lev_seaice_update
+!code_adlo*_2lev_seaice_update
 !input_adhi
-!input_adlo
+!input_adlo*
 !*.sh
 
 # Allow mappings Python source, but not caches

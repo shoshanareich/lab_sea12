@@ -1,0 +1,31 @@
+# =========================
+# pkg AUTODIFF parameters :
+# =========================
+#  inAdExact :: get an exact adjoint (no approximation) (def=.True.)
+#
+ &AUTODIFF_PARM01
+# inAdExact = .FALSE.,
+ useKPPinAdMode = .FALSE.,
+ useGMRediInAdMode = .FALSE.,
+ useSEAICEInAdMode = .FALSE.,
+ useSALT_PLUMEinAdMode = .FALSE.,
+# useInOutAdvar = .TRUE.,
+# inAddiffKhT        = 1.E3,
+# inAddiffKhS        = 1.E3,
+# outAddiffKhT       = 0.0,
+# outAddiffKhS       = 0.0,
+# inAdviscA4Grid     = 0.0E0,
+# inAdviscAhGrid     = 0.0E0,
+# inAdviscArNr       = 1.93e-5,
+# inAddiffK4T        = 0.E10,
+# inAddiffK4S        = 0.E10,
+# outAdviscA4Grid    = 0.E0,
+# outAdviscAhGrid    = 0.E-4,
+# outAdviscArNr      = 1.93e-5,
+# outAddiffK4T       = 0.E10,
+# outAddiffK4S       = 0.E10,
+# viscFacInAd = 10.,
+#for multigrid:
+# MSfacX = 1,
+# MSfacY = 1,
+ &
