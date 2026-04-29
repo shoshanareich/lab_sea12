@@ -125,9 +125,9 @@
 # dumpFreq = 86400.,
 # dumpFreq = 1200.,
 # monitorFreq=2592000.,
- monitorFreq=86400.,
- adjMonitorFreq=86400.,
- adjDumpFreq=864000.,
+ monitorFreq=864000.,
+ adjMonitorFreq=864000.,
+ adjDumpFreq=0.,
  &
 
 # Gridding parameters

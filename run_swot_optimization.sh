@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J labseaMGswot
-#SBATCH -o labseaMGswot.%j.out
-#SBATCH -e labseaMGswot.%j.err
+#SBATCH -J swot_warmstart
+#SBATCH -o swot_warmstart.%j.out
+#SBATCH -e swot_warmstart.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -39,8 +39,8 @@ nprocs_hr=180
 nprocs_lr=16
 
 #iter=0
-iter=1
-itermax=10
+iter=10
+itermax=19
 costfactor=0.95
 
 jobfile=run_swot_optimization.bash

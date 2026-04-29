@@ -6,7 +6,7 @@
 # obsfitFiles(1) = 'swot_labsea_jan1_jan2_LR_removebad',
  obsfitFiles(1) = 'swot_obsfit_cycles_9thru11_labsea_L3v3',
  mult_obsfit(1) = 1.0,
- obsfitFiles(2) = 'rads_2024_obsfit',
+ obsfitFiles(2) = 'rads_20240101_20240308',
  mult_obsfit(2) = 0.0,
  obsfitdoncoutput = .TRUE.,
  &

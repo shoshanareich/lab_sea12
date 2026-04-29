@@ -38,7 +38,7 @@ export I_MPI_DEBUG=4
 nprocs_hr=180
 nprocs_lr=16
 
-iter=0
+iter=1
 itermax=10
 costfactor=0.95
 
@@ -86,6 +86,7 @@ while [ ! ${iter} -gt $itermax ]; do
   mv data.cal_summer data.cal
   
   sed -i 's/swot_obsfit_cycles_9thru11_labsea_L3v3/swot_obsfit_cycles_18thru20_labsea_L3v3/g' data.obsfit
+  sed -i 's/rads_20240101_20240308/rads_20240710_20240911/g' data.obsfit
 
   if [ ${iter} -lt 1 ]; then
      rm xx*
@@ -181,6 +182,7 @@ while [ ! ${iter} -gt $itermax ]; do
   mv data.cal_summer data.cal
 
   sed -i 's/swot_obsfit_cycles_9thru11_labsea_L3v3/swot_obsfit_cycles_18thru20_labsea_L3v3/g' data.obsfit
+  sed -i 's/rads_20240101_20240308/rads_20240710_20240911/g' data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -272,6 +274,7 @@ EOF
   mv data.cal_summer data.cal
 
   sed -i 's/swot_obsfit_cycles_9thru11_labsea_L3v3/swot_obsfit_cycles_18thru20_labsea_L3v3/g' data.obsfit
+  sed -i 's/rads_20240101_20240308/rads_20240710_20240911/g' data.obsfit
 
   #---  run  --------
   \rm -f mitgcmuv*

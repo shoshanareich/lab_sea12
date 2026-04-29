@@ -28,7 +28,7 @@ ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
 ln -s ${datadir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
 ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
 ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask.nc .
-ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES.nc .
+ln -s ${datadir}/input_binaries_hires/swot*.nc .
 ln -s ${datadir}/input_binaries_hires/rads_20240101_20240308.nc .
 ln -s ${datadir}/input_binaries_hires/rads_* .
 ln -s ${datadir}/input_binaries_lores/slaerr_03m.bin .

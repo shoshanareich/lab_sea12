@@ -5,7 +5,7 @@
   useKPP    = .TRUE.,
   useEXF    = .TRUE.,
   useSEAICE = .TRUE.,
-  useDiagnostics = .TRUE.,
+#  useDiagnostics = .TRUE.,
   useSALT_PLUME = .TRUE.,
 ## useMNC    = .TRUE.,
   useECCO   = .TRUE.,
