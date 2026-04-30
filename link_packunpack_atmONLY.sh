@@ -1,0 +1,91 @@
+#rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
+#datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
+rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+iter=$1
+iter=$((iter+1))
+optimext=$(printf "%04d" $iter)
+workdir=$2
+optimdir=$3
+builddir=$4
+dirhires=$5
+
+mkdir -p ./diags/
+
+#--- 6. NAMELISTS ---------
+#ln -s ${datadir}/input_cal/* .
+cp ${rootdir}/input_adlo/* .
+ln -s ${datadir}/input_binaries_lores/bathy_cleaned_96x120.bin .
+ln -s ${datadir}/input_binaries_lores/LevCli_temp_120x96_linearv3_smooth.labsea1979 .
+ln -s ${datadir}/input_binaries_lores/LevCli_salt_120x96_linearv3_smooth.labsea1979 .
+ln -s ${datadir}/input_binaries_lores/viscd_bottom_topo*.bin .
+ln -s ${datadir}/input_binaries_lores/viscz_bottom_topo*.bin .
+ln -s ${datadir}/input_binaries_lores/xx_diffkr_effective_it4_r4.bin .
+ln -s ${datadir}/input_binaries_exf/* .
+ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
+ln -s ${datadir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
+ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
+ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_NACmask.nc .
+ln -s ${datadir}/input_binaries_hires/swot*.nc .
+ln -s ${datadir}/input_binaries_hires/rads_20240101_20240308.nc .
+ln -s ${datadir}/input_binaries_hires/rads*.nc .
+ln -s ${datadir}/input_binaries_lores/rads_*_v2_2024* .
+ln -s ${datadir}/input_weights_lores/*_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin .
+ln -s ${datadir}/input_binaries_lores/rads_j3_labsea_96x120_v2_2024 .
+ln -s ${datadir}/input_binaries_lores/slaerr_03m.bin .
+ln -s ${datadir}/input_weights_lores/*fromASTE_*.bin .
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.meta pickup_seaice.0000000001.meta
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.data pickup_seaice.0000000001.data
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.meta pickup.0000000001.meta
+#cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.data pickup.0000000001.data
+#cp ${datadir}/input_binaries_lores/pickup_seaice.0000025920.meta pickup_seaice.0000000001.meta
+#cp ${datadir}/input_binaries_lores/pickup_seaice.0000025920.data pickup_seaice.0000000001.data
+#cp ${datadir}/input_binaries_lores/pickup.0000025920.meta pickup.0000000001.meta
+#cp ${datadir}/input_binaries_lores/pickup.0000025920.data pickup.0000000001.data
+
+cp /scratch/08382/shoshi/labsea_runs/assim_swot_MG/run_adlo_it0004_1ts_FWD/pickup_seaice.0000000002.meta pickup_seaice.0000000001.meta
+cp /scratch/08382/shoshi/labsea_runs/assim_swot_MG/run_adlo_it0004_1ts_FWD/pickup_seaice.0000000002.data pickup_seaice.0000000001.data
+cp /scratch/08382/shoshi/labsea_runs/assim_swot_MG/run_adlo_it0004_1ts_FWD/pickup.0000000002.meta pickup.0000000001.meta
+cp /scratch/08382/shoshi/labsea_runs/assim_swot_MG/run_adlo_it0004_1ts_FWD/pickup.0000000002.data pickup.0000000001.data
+mkdir jra3q
+#ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
+rm data.diagnostics
+cp ${datadir}/input_adhi/data.diagnostics .
+
+## for atm only
+rm data
+rm data.ctrl
+
+mv data_atmONLY data
+mv data.ctrl_atmONLY data.ctrl
+
+cp ${optimdir}/ecco_ctrl_MIT_CE_000.opt$optimext .
+rm costfinal
+
+#tapes:
+rm -rf ./tapes
+cp -r $dirhires/tapes ./
+
+##--- 5. linking xx_ fields ------
+    sed -i -e 's/'"doinitxx = .TRUE"'/'"doinitxx = .FALSE"'/g' data.ctrl
+    sed -i -e 's/'"doInitxx = .TRUE"'/'"doInitxx = .FALSE"'/g' data.ctrl
+    sed -i -e 's/'"doInitXX = .TRUE."'/'"doInitXX = .FALSE."'/g' data.ctrl
+    sed -i -e 's/'"doMainUnpack = .FALSE."'/'"doMainUnpack = .TRUE."'/g' data.ctrl
+    sed -i -e 's/'"doMainUnpack = .false."'/'"doMainUnpack = .true."'/g' data.ctrl
+    sed -i -e 's/'"doMainPack = .TRUE."'/'"doMainPack = .FALSE."'/g' data.ctrl
+    sed -i -e 's/'"doMainPack = .true."'/'"doMainPack = .false."'/g' data.ctrl
+
+#--- 10. (re)set optimcycle --------------------
+
+\rm data.optim
+cat > data.optim <<EOF
+ &OPTIM
+ optimcycle=${iter},
+ /
+EOF
+
+#--- 7. executable --------
+cp -p ${builddir}/mitgcmuv_ad .
+
+mkdir xx_hires/

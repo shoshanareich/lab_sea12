@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J swot_warmstart
-#SBATCH -o swot_warmstart.%j.out
-#SBATCH -e swot_warmstart.%j.err
+#SBATCH -J swot_atmctrlsONLY
+#SBATCH -o swot_atmctrlsONLY.%j.out
+#SBATCH -e swot_atmctrlsONLY.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -39,8 +39,8 @@ nprocs_hr=180
 nprocs_lr=16
 
 #iter=0
-iter=10
-itermax=19
+iter=0
+itermax=10
 costfactor=0.95
 
 jobfile=run_swot_optimization.bash
@@ -49,7 +49,7 @@ jobfile=run_swot_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG_warmstart/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG_atmctrlsONLY/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -74,7 +74,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp binaries into workdir_hi
   # change data.ctrl
   # cp xx_[ctrl] adjustments if iter > 0
-  ${rootdir}/link_hires.sh $iter $ext2 $scratchdir $builddir_hi 
+  ${rootdir}/link_hires_atmONLY.sh $iter $ext2 $scratchdir $builddir_hi 
 
   #---  run  --------
   \rm -f mitgcmuv*
@@ -113,7 +113,7 @@ while [ ! ${iter} -gt $itermax ]; do
   # cp binaries into workdir_lo
   # cp ONLINE low-res cost, misfit, barfiles, and xx_[ctrl]
   # create data.optim
-  ${rootdir}/link_lores.sh $iter $workdir_hi $scratchdir $builddir_lo
+  ${rootdir}/link_lores_atmONLY.sh $iter $workdir_hi $scratchdir $builddir_lo
   
   #---  run  --------
   \rm -f mitgcmuv*
@@ -192,7 +192,7 @@ EOF
   # change data to run for 1 timestep
   # use lo build until figure out why we're not getting xx_[].effective
   # but it's only running the first chunk of the divided adjoint before automatically stopping 
-  ${rootdir}/link_packunpack.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
+  ${rootdir}/link_packunpack_atmONLY.sh $ext2 $workdir_pup $optimdir $builddir_lo $workdir_hi 
 
   #---  run  --------
   \rm -f mitgcmuv*
