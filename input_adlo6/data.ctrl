@@ -20,13 +20,13 @@
 # *********************
  &CTRL_NML_GENARR
  xx_genarr3d_file(1)       = 'xx_theta',
- xx_genarr3d_weight(1)     = 'T_wt_fromASTE_removeboundary_v4.bin',
+ xx_genarr3d_weight(1)     = 'T_wt_fromASTE_192x240_removeboundary.bin',
  xx_genarr3d_bounds(1:5,1) = -2.,-1.9,39.,40.,5.,
  xx_genarr3d_preproc(1,1)  = 'WC01',
  mult_genarr3d(1)          = 1.,
 #
  xx_genarr3d_file(2)       = 'xx_salt',
- xx_genarr3d_weight(2)     = 'S_wt_fromASTE_removeboundary_v4.bin',
+ xx_genarr3d_weight(2)     = 'S_wt_fromASTE_192x240_removeboundary.bin',
  xx_genarr3d_bounds(1:5,2) = 29.,29.5,40.5,41.,5.,
  xx_genarr3d_preproc(1,2)='WC01',
  mult_genarr3d(2)          = 1.,
@@ -42,7 +42,7 @@
 ##mult_genarr2d(2)          = 1.0,
 ###
  xx_gentim2d_file(1)       = 'xx_atemp',
- xx_gentim2d_weight(1)     = 'Tair_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(1)     = 'Tair_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
 # xx_gentim2d_weight(1)     = 'ones_64b.bin',
  xx_gentim2d_startdate1(1) = 20240104,
  xx_gentim2d_startdate2(1) = 000000,
@@ -52,7 +52,7 @@
 #
 #
  xx_gentim2d_file(3)       = 'xx_precip',
- xx_gentim2d_weight(3)     = 'rain_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(3)     = 'rain_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
  xx_gentim2d_startdate1(3) = 20240104,
  xx_gentim2d_startdate2(3) = 000000,
  xx_gentim2d_period(3)     = 86400.0,
@@ -67,7 +67,7 @@
 ##mult_gentim2d(9)          = 1.0,
 #
  xx_gentim2d_file(5)       = 'xx_swdown',
- xx_gentim2d_weight(5)     = 'dsw_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(5)     = 'dsw_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
  xx_gentim2d_startdate1(5) = 20240104,
  xx_gentim2d_startdate2(5) = 000000,
  xx_gentim2d_period(5)     = 86400.0,
@@ -75,7 +75,7 @@
  mult_gentim2d(5)          = 1.0,
 #
  xx_gentim2d_file(6)       = 'xx_lwdown',
- xx_gentim2d_weight(6)     = 'dlw_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(6)     = 'dlw_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
  xx_gentim2d_startdate1(6) = 20240104,
  xx_gentim2d_startdate2(6) = 000000,
  xx_gentim2d_period(6)     = 86400.0,
@@ -83,7 +83,7 @@
  mult_gentim2d(6)          = 1.0,
 #
  xx_gentim2d_file(7)       = 'xx_uwind',
- xx_gentim2d_weight(7)     = 'uwind_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(7)     = 'uwind_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
 # xx_gentim2d_weight(7)     = 'ones_64b.bin',
  xx_gentim2d_startdate1(7) = 20240104,
  xx_gentim2d_startdate2(7) = 000000,
@@ -92,7 +92,7 @@
  mult_gentim2d(7)          = 1.0,
 #
  xx_gentim2d_file(8)       = 'xx_vwind',
- xx_gentim2d_weight(8)     = 'vwind_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(8)     = 'vwind_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
 # xx_gentim2d_weight(8)     = 'ones_64b.bin',
  xx_gentim2d_startdate1(8) = 20240104,
  xx_gentim2d_startdate2(8) = 000000,
@@ -101,7 +101,7 @@
  mult_gentim2d(8)          = 1.0,
 #
  xx_gentim2d_file(9)       = 'xx_aqh',
- xx_gentim2d_weight(9)     = 'aqh_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin',
+ xx_gentim2d_weight(9)     = 'aqh_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary_192x240.bin',
  xx_gentim2d_startdate1(9) = 20240104,
  xx_gentim2d_startdate2(9) = 000000,
  xx_gentim2d_period(9)     = 86400.0,

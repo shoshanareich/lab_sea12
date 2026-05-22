@@ -33,15 +33,24 @@
  no_slip_sides=.FALSE.,
  no_slip_bottom=.TRUE.,
  viscAz=1.93e-5,
- viscAh=1.E0,
- viscAhGrid=2.E-2,
-# viscAh=1.E2,
- viscC4Leith=1.5,
- viscC4Leithd=1.5,
- diffKhT=0.0,
-# diffKzT=1.46e-5,
- diffKhS=0.0,
-# diffKzS=1.46e-5,
+# viscAh=1.E0,
+# viscAhGrid=2.E-2,
+ viscA4Grid=0.2,
+ diffKhT=0.E0,
+ diffKhS=0.E0,
+ diffK4T=0.E10,
+ diffK4S=0.E10,
+# from aste: viscA4Grid, viscA4GridMax, useAreaViscLength
+# viscC4Leith=1.5,
+# viscC4Leithd=1.5,
+ viscC4Leith=2.0,
+ viscC4Leithd=2.0,
+ viscA4GridMax=0.8,
+# useAreaViscLength=.TRUE.,
+# diffKhT=0.0,
+## diffKzT=1.46e-5,
+# diffKhS=0.0,
+## diffKzS=1.46e-5,
  implicitFreeSurface=.TRUE.,
  eosType='JMD95Z',
  saltStepping=.TRUE.,
@@ -69,7 +78,7 @@
  useSingleCpuIO=.TRUE.,
  readBinaryPrec=32,
  writeBinaryPrec=32,
- debugLevel=-1,
+ debugLevel=4,
  &
 
 # Elliptic solver parameters
@@ -101,7 +110,7 @@
  pickupStrictlyMatch=.FALSE.,
 # tauCD=172800.,
 # startTime=0.0,
- nIter0=1,
+ nIter0=0,
 # 1 day
 # nTimeSteps=144,
 # 5 days
@@ -113,19 +122,19 @@
 # 31 days
 # nTimeSteps=4464,
 # 63 days 1/4 - 3/6
- nTimeSteps=9072,
-# 10 years 
-# nTimeSteps=262980,
+# nTimeSteps=9072,
+# 1 year 
+ nTimeSteps=52704,
  deltaT=600.0,
  cAdjFreq=0.,
  abEps=0.1,
  forcing_In_AB = .FALSE.,
- pChkptFreq=31557600.,
- chkptFreq=31557600.,
-# dumpFreq = 86400.,
+ pChkptFreq=2592000.,
+ chkptFreq=0.,
+ dumpFreq = 86400.,
 # dumpFreq = 1200.,
 # monitorFreq=2592000.,
- monitorFreq=864000.,
+ monitorFreq=86400.,
  adjMonitorFreq=864000.,
  adjDumpFreq=0.,
  &
@@ -165,10 +174,10 @@
 # bathyFile       = 'bathy.labsea1979',
 # bathyFile       = 'bathy_120x96_v3.labsea1979',
  bathyFile       = 'bathy_cleaned_192x240.bin',
- hydrogThetaFile = 'LevCli_temp_240x192_linearv3_smooth.labsea1979',
- hydrogSaltFile  = 'LevCli_salt_240x192_linearv3_smooth.labsea1979',
- viscAHDfile    ='viscd_bottom_topo_240x192.bin',
- viscAHZfile    ='viscz_bottom_topo_240x192.bin',
+ hydrogThetaFile = 'LevCli_temp_240x192_v1_binavg.labsea1979',
+ hydrogSaltFile  = 'LevCli_salt_240x192_v1_binavg.labsea1979',
+# viscAHDfile    ='viscd_bottom_topo_240x192.bin',
+# viscAHZfile    ='viscz_bottom_topo_240x192.bin',
  diffKrFile     ='diffkr_r4_240x192.bin',
  &
 

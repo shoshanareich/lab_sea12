@@ -15,3 +15,8 @@
 !mappings/
 mappings/__pycache__/
 !mappings/*.py
+
+# ignore some sverdrup stuff
+submit_HR_32x32.sh
+submit_HR_48x48.sh
+submit_LR6_spinup.sh

@@ -1,36 +1,71 @@
 # GM+Redi package parameters:
-#     GM_Small_Number  :: epsilon used in computing the slope
-#     GM_slopeSqCutoff :: slope^2 cut-off value 
 
 #-from MOM :
-# GM_background_K: 	G & Mc.W  diffusion coefficient
-# GM_maxSlope    :	max slope of isopycnals
-# GM_Scrit       :	transition for scaling diffusion coefficient
-# GM_Sd          :	half width scaling for diffusion coefficient
-# GM_taper_scheme:	slope clipping or one of the tapering schemes
-# GM_Kmin_horiz  :	horizontal diffusion minimum value 
+# GM_background_K:      G & Mc.W  diffusion coefficient
+# GM_maxSlope    :      max slope of isopycnals
+# GM_Scrit       :      transition for scaling diffusion coefficient
+# GM_Sd          :      half width scaling for diffusion coefficient
+# GM_taper_scheme:      slope clipping or one of the tapering schemes
+# GM_Kmin_horiz  :      horizontal diffusion minimum value 
 
 #-Option parameters (needs to "define" options in GMREDI_OPTIONS.h")
-# GM_isopycK     :	isopycnal diffusion coefficient (default=GM_background_K)
-# GM_AdvForm     :	turn on GM Advective form       (default=Skew flux form)
+# GM_isopycK     :      isopycnal diffusion coefficient (default=GM_background_K)
+# GM_AdvForm     :      turn on GM Advective form       (default=Skew flux form)
 
- &GM_PARM01 
-  GM_Small_Number  = 1.D-20,
-  GM_slopeSqCutoff = 1.D+08,
-  GM_AdvForm         = .FALSE.,
-#  GM_isopycK         = 1.1D+3,
-#  GM_background_K    = 0.9D+3,
-  GM_background_K    = 1.D+3,
-  GM_taper_scheme    = 'dm95',
-  GM_maxSlope        = 1.D-2,
-  GM_Kmin_horiz      = 50.,
-  GM_Scrit           = 4.D-3,
-  GM_Sd              = 1.D-3,
-#  GM_Visbeck_alpha   = 1.5D-2,
-  GM_Visbeck_alpha   = 0.,
-  GM_Visbeck_length  = 2.D+5,
-  GM_Visbeck_depth   = 1.D+3,
-  GM_Visbeck_maxval_K= 2.5D+3,
+ &GM_PARM01
+  GM_AdvForm         = .TRUE.,
+# gm diffusivity, this is related to bolus velocity
+##  GM_background_K    = 500.0,
+#  GM_background_K    = 200.,
+# redi diffusivity, should it be the same as gm?, this is isopycnal
+#  GM_isopycK         = 250.0,
+#  GM_isopycK         = 175.0,
+#  GM_isopycK         = 1.0,
+#note this flag GM_useK3D is very deceiving, means something completely different
+####  GM_useK3D          = .TRUE.,
+#  GM_Kmin_horiz      = 10.,
+  GM_Kmin_horiz      = 0.,
+#  GM_taper_scheme    = 'ldd97',
+  GM_taper_scheme    = 'stableGmAdjTap',
+  GM_maxSlope        = 1.e-2,
+#  GM_iso2dFile       = 'GMiso2d_v01.bin',
+#  GM_bol2dFile       = 'GMbol2d_v01.bin',
+##  GM_iso2dFile       = 'GMiso2d_v03.bin',
+##  GM_bol2dFile       = 'GMbol2d_v03.bin',
+#  GM_iso2dFile       = 'GMiso2d_v04.bin',
+#  GM_bol2dFile       = 'GMbol2d_v04.bin',
+####  GM_iso1dFile       = 'GMiso1d_v03.bin',
+####  GM_bol1dFile       = 'GMbol1d_v03.bin',
+#  GM_iso1dFile       = 'GMiso1d_v04.bin',
+#  GM_bol1dFile       = 'GMbol1d_v04.bin',
+#  GM_background_K3dFile = 'xx_kapgm_effective_it12_real8.bin',
+#  GM_isopycK3dFile      = 'xx_kapredi_effective_it12_real8.bin',
+#  GM_isopycK3dFile      = 'GMisoKapRedi_3D_v00_9x10eff.bin',
+#  GM_background_K3dFile = 'kapgm_it37argoitpTSeffective_real8.bin',
+#  GM_isopycK3dFile      = 'kapredi_it37argoitpTSeffective_real8.bin',
+#  GM_background_K3dFile = 'GMbol3d_v04_04.bin',
+#  GM_isopycK3dFile      = 'GMiso3d_v04_04.bin',
+##  GM_background_K3dFile = 'kapgm_dN_GMR_itpT_it71_real8.bin',
+##  GM_isopycK3dFile      = 'kapredi_dN_GMR_itpT_it71_real8.bin',
+#  GM_background_K3dFile = 'KapGM_blend_v0404_i37.bin',
+#  GM_isopycK3dFile      = 'KapRedi_blend_v0404_i37.bin',
+#  GM_background_K3dFile = 'KapGM_blend_v0404_i37smGSc20.bin',
+#  GM_isopycK3dFile      = 'KapRedi_blend_v0404_i37smGSc20.bin',
+#  GM_background_K3dFile = 'KapGM_blend_v0404_i37smGSc20_v4.bin',
+# THIS IS WHAT AN USED FOR LLC270 ASTE RELEASE1. WE'VE INTERPOLATED TO LLC540 AND RESCALED BY 0.25 
+# /home/atnguyen/nansen/matlab_aste_540x720x360
+#  GM_background_K3dFile = 'KapGM_mod_v16.bin',
+#  GM_isopycK3dFile      = 'KapRedi_blend_v0404_i37smGSc20_v4.bin',
+  GM_K3dGMFile          = 'KapGM_from_aste540.bin',
+  GM_K3dRediFile        = 'KapRedi_from_aste540.bin',
+#  GM_background_K3dFile = 'KapGM_mod_v11.bin',
+#  GM_isopycK3dFile      = 'KapRedi_mod_v11.bin',
+#  GM_background_K3dFile = 'KapGM_mod_v12.bin',
+#  GM_isopycK3dFile      = 'KapRedi_mod_v12.bin',
+#  GM_background_K3dFile = 'KapGM_mod_v13.bin',
+#  GM_isopycK3dFile      = 'KapRedi_mod_v13.bin',
+#  GM_background_K3dFile = 'KapGM_mod_v14.bin',
+#  GM_isopycK3dFile      = 'KapRedi_mod_v14.bin',
+#  GM_background_K3dFile = 'KapGM_mod_v15.bin',
+#  GM_isopycK3dFile      = 'KapRedi_mod_v15.bin',
  &
-
-

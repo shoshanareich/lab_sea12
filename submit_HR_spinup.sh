@@ -27,10 +27,10 @@ rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
 scratchdir=/scratch/shoshi/labsea_MG_12/
 
-builddir=${rootdir}/build_hi_fwd
+builddir=${rootdir}/build_hi_fwd_32x32
 
 
-workdir_hi=${scratchdir}/run_hi_July24
+workdir_hi=${scratchdir}/run_hi_32x32_1ts
 
 if [ ! -d $workdir_hi ]; then
   mkdir -p $workdir_hi;
@@ -78,14 +78,19 @@ sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
 sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
 sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
 
-rm data
-mv data_spinup data
+sed -i -e 's/'"nTimeSteps=18144"'/'"nTimeSteps=1"'/g' data
+sed -i -e 's/'"debugLevel=-1"'/'"debugLevel=1"'/g' data
+
+rm data.exch2
+
+#rm data
+#mv data_spinup data
 rm data.pkg
 mv data.pkg_spinup data.pkg
-rm data.cal
-mv data.cal_spinup data.cal
-rm data.diagnostics
-cp /scratch/shoshi/labsea_MG_12/run_hi_1yr_jra3q_B/data.diagnostics .
+#rm data.cal
+#mv data.cal_spinup data.cal
+#rm data.diagnostics
+#cp /scratch/shoshi/labsea_MG_12/run_hi_1yr_jra3q_B/data.diagnostics .
 
 \rm data.optim
 cat > data.optim <<EOF
