@@ -1,8 +1,8 @@
 #!/bin/bash -x
-#SBATCH -J labseaLRargo 
-#SBATCH -o labseaLRargo.%j.out
-#SBATCH -e labseaLRargo.%j.err
-#SBATCH -t 6:00:00
+#SBATCH -J swot_LR
+#SBATCH -o swot_LR.%j.out
+#SBATCH -e swot_LR.%j.err
+#SBATCH -t 8:00:00
 #SBATCH -p skx
 #SBATCH -N 1 
 #SBATCH -n 16
@@ -37,8 +37,8 @@ export I_MPI_DEBUG=4
 # note: for nprocs, take ntiles - length(blanklist)
 nprocs_lr=16
 
-iter=0
-itermax=10
+iter=6
+itermax=20
 costfactor=0.95
 
 jobfile=run_optimization.bash
@@ -47,7 +47,7 @@ jobfile=run_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_LR/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_LR/
 
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
 optimdir=${scratchdir}/OPTIM
@@ -82,6 +82,10 @@ while [ ! ${iter} -gt $itermax ]; do
   ln -s ${rootdir}/input_binaries_exf/* .
   ln -s ${rootdir}/input_binaries_hires/ones_64b.bin .
   ln -s ${rootdir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
+  ln -s ${rootdir}/input_binaries_hires/swot*.nc .
+  ln -s ${rootdir}/input_binaries_hires/rads_20240101_20240308.nc .
+  ln -s ${rootdir}/input_binaries_hires/rads*.nc .
+  ln -s ${rootdir}/input_binaries_lores/rads_*_v2_2024* .
   ln -s ${rootdir}/input_weights_lores/*_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin .
   ln -s ${rootdir}/input_binaries_lores/rads_j3_labsea_96x120_v2_2024 .
   ln -s ${rootdir}/input_binaries_lores/slaerr_03m.bin .
@@ -99,10 +103,50 @@ while [ ! ${iter} -gt $itermax ]; do
   
   ##--- 5. linking xx_ fields ------
   if [ ${iter} -lt 1 ]; then
-    sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
-    sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
+    sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .FALSE."'/g' data.ctrl
+    sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .FALSE."'/g' data.ctrl
     sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
     sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_aqh.0000000009.data ./xx_aqh.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_aqh.effective.0000000009.data ./xx_aqh.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_atemp.0000000009.data ./xx_atemp.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_atemp.effective.0000000009.data ./xx_atemp.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_diffkr.0000000009.data ./xx_diffkr.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_diffkr.effective.0000000009.data ./xx_diffkr.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_lwdown.0000000009.data ./xx_lwdown.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_lwdown.effective.0000000009.data ./xx_lwdown.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_precip.0000000009.data ./xx_precip.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_precip.effective.0000000009.data ./xx_precip.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_salt.0000000009.data ./xx_salt.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_salt.effective.0000000009.data ./xx_salt.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_swdown.0000000009.data ./xx_swdown.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_swdown.effective.0000000009.data ./xx_swdown.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_theta.0000000009.data ./xx_theta.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_theta.effective.0000000009.data ./xx_theta.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_uwind.0000000009.data ./xx_uwind.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_uwind.effective.0000000009.data ./xx_uwind.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_vwind.0000000009.data ./xx_vwind.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_vwind.effective.0000000009.data ./xx_vwind.effective.0000000000.data
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_aqh.0000000009.meta ./xx_aqh.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_aqh.effective.0000000009.meta ./xx_aqh.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_atemp.0000000009.meta ./xx_atemp.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_atemp.effective.0000000009.meta ./xx_atemp.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_diffkr.0000000009.meta ./xx_diffkr.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_diffkr.effective.0000000009.meta ./xx_diffkr.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_lwdown.0000000009.meta ./xx_lwdown.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_lwdown.effective.0000000009.meta ./xx_lwdown.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_precip.0000000009.meta ./xx_precip.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_precip.effective.0000000009.meta ./xx_precip.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_salt.0000000009.meta ./xx_salt.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_salt.effective.0000000009.meta ./xx_salt.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_swdown.0000000009.meta ./xx_swdown.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_swdown.effective.0000000009.meta ./xx_swdown.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_theta.0000000009.meta ./xx_theta.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_theta.effective.0000000009.meta ./xx_theta.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_uwind.0000000009.meta ./xx_uwind.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_uwind.effective.0000000009.meta ./xx_uwind.effective.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_vwind.0000000009.meta ./xx_vwind.0000000000.meta
+    cp /scratch/08382/shoshi/labsea_runs/assim_argo_LR/run_lo_it0009/xx_vwind.effective.0000000009.meta ./xx_vwind.effective.0000000000.meta
   else
     sed -i -e 's/'"doinitxx = .TRUE."'/'"doinitxx = .FALSE."'/g' data.ctrl
     sed -i -e 's/'"doInitXX = .TRUE."'/'"doInitXX = .FALSE."'/g' data.ctrl

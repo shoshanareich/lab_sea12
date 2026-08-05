@@ -23,8 +23,8 @@ nprocs_hr=16
 jobfile=submit_LR_spinup.sh
 
 #--- set dir ------------
-rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
-datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
+rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
 scratchdir=/scratch/shoshi/labsea_MG_12/
 
 builddir=${rootdir}/build_lo_fwd
