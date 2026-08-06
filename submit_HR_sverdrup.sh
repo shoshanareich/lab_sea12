@@ -82,6 +82,11 @@ cp ${datadir}/input_binaries_hires/smooth*norm* .
 mkdir jra3q
 ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
 
+#### for HR adjoint
+rm data.autodiff
+cp ${rootdir}/input_adlo/data.autodiff .
+
+
 #-- swap out data.ctrl and copy high-res adjustments
 if [ ${iter} -lt 1 ]; then
   sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
@@ -173,9 +178,9 @@ mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
 date >> run.MITGCM.timing
 
 
-date > run.MITGCM.timing
-mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
-date >> run.MITGCM.timing
+date > run.MITGCM.timing_adj
+mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout_adj
+date >> run.MITGCM.timing_adj
 
 
 cd ..
