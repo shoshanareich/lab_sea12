@@ -56,8 +56,8 @@
 # /home/atnguyen/nansen/matlab_aste_540x720x360
 #  GM_background_K3dFile = 'KapGM_mod_v16.bin',
 #  GM_isopycK3dFile      = 'KapRedi_blend_v0404_i37smGSc20_v4.bin',
-  GM_K3dGMFile          = 'KapGM_from_aste540.bin',
-  GM_K3dRediFile        = 'KapRedi_from_aste540.bin',
+  GM_K3dGMFile          = 'KapGM_from_aste540_r4.bin',
+  GM_K3dRediFile        = 'KapRedi_from_aste540_r4.bin',
 #  GM_background_K3dFile = 'KapGM_mod_v11.bin',
 #  GM_isopycK3dFile      = 'KapRedi_mod_v11.bin',
 #  GM_background_K3dFile = 'KapGM_mod_v12.bin',

@@ -898,21 +898,23 @@ c      if ( outlev.GT.0 ) then
         if( domean) then
           nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*nnzobs
 c          nArr=nxb*nyb*nSx*nSy*nnzobs
-          call write_glvec_rl(fname3,' ',
-     I          localdifmeanOutlo,nArr,myIter,myThid)
+CSR: these calls cause issues when running HR only optimization
+CSR: and we don't even use the _lo files I don't think
+CSR          call write_glvec_rl(fname3,' ',
+CSR     I          localdifmeanOutlo,nArr,myIter,myThid)
         else
 c          nArr=nxb*nyb*nSx*nSy*nrecloop*nnzobs
           nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*nrecloop*nnzobs
-          call write_glvec_rl(fname3,' ',
-     I          localdiflo,nArr,myIter,myThid)
+CSR          call write_glvec_rl(fname3,' ',
+CSR     I          localdiflo,nArr,myIter,myThid)
         endif
         write(*,*) nArr,domean,fname3
         il=ilnblnk(localbarfile)
         write(fname3(1:128),'(2a)') localbarfile(1:il), '_lo'
         nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*nrecloop*nnzobs
 c        nArr=nxb*nyb*nSx*nSy*nrecloop*nnzobs
-        call write_glvec_rl(fname3,' ',
-     I        localbarlo,nArr,myIter,myThid)
+CSR        call write_glvec_rl(fname3,' ',
+CSR     I        localbarlo,nArr,myIter,myThid)
 ccatn: now also attempt to write meta file!
 c        dimList(1,1) = nxb
 c        dimList(2,1) = 1
