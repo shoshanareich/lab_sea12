@@ -1,6 +1,6 @@
 #!/bin/bash
-#PBS -q normal
-#PBS -l select=3:ncpus=103:model=sky_ele
+#PBS -q long 
+#PBS -l select=3:ncpus=40:model=sky_ele
 #PBS -l walltime=48:00:00
 #PBS -o argoMG.out
 #PBS -e argoMG.err
@@ -10,14 +10,14 @@
 #--- 0.load modules ------
 ulimit -s unlimited
 #limit stacksize unlimited
-module purge
-
-module load comp-intel/2018.3.222
-module load szip/2.1.1
-module load mpi-hpe/mpt
-module load hdf4/4.2.12
-module load hdf5/1.8.18_mpt
-module load netcdf/4.4.1.1_mpt
+#module purge
+#
+#module load comp-intel/2018.3.222
+#module load szip/2.1.1
+#module load mpi-hpe/mpt
+#module load hdf4/4.2.12
+#module load hdf5/1.8.18_mpt
+#module load netcdf/4.4.1.1_mpt
 module use -a /swbuild/analytix/tools/modulefiles
 module load miniconda3/v4
 
@@ -83,9 +83,7 @@ while [ ! ${iter} -gt $itermax ]; do
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_hr} ./mitgcmuv_ad > stdout
-#  ibrun -npernode 16 ./mitgcmuv_ad > stdout
+  mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
   cd ..
 
@@ -120,15 +118,13 @@ while [ ! ${iter} -gt $itermax ]; do
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout
+  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
 
 #  sed -i 's/61/0/g' divided.ctrl
   sed -i 's/376/0/g' divided.ctrl
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout
+  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
   cd ..
 
@@ -199,8 +195,7 @@ EOF
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
+  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
 
 #  # Get the PID of the executable
 #  EXEC_PID=$!
