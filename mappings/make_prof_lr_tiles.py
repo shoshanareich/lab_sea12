@@ -5,7 +5,8 @@ import sys
 import glob
 import xmitgcm
 
-sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
+#sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
+sys.path.append('/nobackup/sreich/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
 from MITgcmutils import rdmds
 
 
@@ -18,7 +19,7 @@ fname = sys.argv[4]
 #fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES'
 fnames = [fname, 'ad'+fname]
 
-root_dir = '/scratch/08382/shoshi/labsea_runs/'
+root_dir = '/nobackup/sreich/labsea_runs/'
 
 run_dir = rundirs + '/run_adhi_it' + iter + ext + '/'
 
@@ -57,7 +58,6 @@ for f_path in forward_files:
 # Combine everything into one master dataset
 hr_all = xr.concat(all_tile_datasets, dim='iPROF').sortby('iPROF')
 
-
 ### load grid info
 grid_dir_lr = root_dir + 'grid_lores/'
 grid_lr = xmitgcm.open_mdsdataset(grid_dir_lr, grid_dir=grid_dir_lr, iters=None)
@@ -67,13 +67,15 @@ grid_lr.hFacC.values = hfacc_lr
 xc_lr = rdmds(grid_dir_lr + 'XC')
 yc_lr = rdmds(grid_dir_lr + 'YC')
 ny, nx = xc_lr.shape
-tile_size = 24
+tile_size = 32 
 
 npx_lr = 5
 npy_lr = 4
 
-npx_hr = 20
-npy_hr = 16
+#npx_hr = 20
+#npy_hr = 16
+npx_hr = 15 
+npy_hr = 12
 
 
 ### Build lr_ocean_map
