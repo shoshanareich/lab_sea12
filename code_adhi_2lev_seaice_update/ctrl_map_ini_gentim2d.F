@@ -207,15 +207,19 @@ C print statements are removed. See "Automatic Differentiation" chap. in the doc
      &   '.effective.',optimcycle
         write(fnamegenTmp(iarr),'(2a,i10.10)')
      &   ctrlDir(1:ilDir)//fnamebase(iarr)(1:ilgen),'.tmp.',optimcycle
-        il=ilnblnk( fnamegenIn )
-        write(*,'(A)') 'gentim2d fnamegenIn: ', fnamegenIn(1:il)
-        il=ilnblnk( fnamegenOut )
-        write(*,'(A)') 'gentim2d fnamegenOut: ', fnamegenOut(1:il)
+CSR   fnamegenIn/Out/Tmp and fnamebase are arrays(1:maxCtrlTim2D); without
+CSR   the (iarr) element index these are array *sections*, not substrings.
+        il=ilnblnk( fnamegenIn(iarr) )
+        write(*,'(A)') 'gentim2d fnamegenIn: ', fnamegenIn(iarr)(1:il)
+        il=ilnblnk( fnamegenOut(iarr) )
+        write(*,'(A)') 'gentim2d fnamegenOut: ', fnamegenOut(iarr)(1:il)
 #ifdef MULTISCALE_COUPLING_TAPES
+CSR   fnamebase(1:ilgen) wrote ilgen*MAX_LEN_FNAM chars into an 80-char
+CSR   record -> forrtl severe (66) in the DIVA adjoint leg.
         write(fnamegenInlo(1:80),'(2a,i10.10)')
-     &       fnamebase(1:ilgen),'_lo.',optimcycle
+     &       fnamebase(iarr)(1:ilgen),'_lo.',optimcycle
         write(fnamegenOutlo(1:80),'(2a,i10.10)')
-     &       fnamebase(1:ilgen),'_lo.effective.',optimcycle
+     &       fnamebase(iarr)(1:ilgen),'_lo.effective.',optimcycle
         il=ilnblnk( fnamegenInlo )
         write(*,'(A)') 'gentim2d fnamegenInlo: ', fnamegenInlo(1:il)
         il=ilnblnk( fnamegenOutlo )
@@ -626,15 +630,16 @@ C--   end iRec loop
 
 !write out after finish nrec loop:
 #ifdef MULTISCALE_COUPLING_TAPES
-        nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*365
-        helpi=-1
-        call write_glvec_rl(fnamegenInlo,' ',
-     I      xx_gen_lo,nArr,helpi,myThid)
-
-        nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*365
-        helpj=-1
-        call write_glvec_rl(fnamegenOutlo,' ',
-     I   xx_gen_scale_lo,nArr,helpj,myThid)
+CSR trouble when doing HR only with fac = 1
+CSR        nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*365
+CSR        helpi=-1
+CSR        call write_glvec_rl(fnamegenInlo,' ',
+CSR     I      xx_gen_lo,nArr,helpi,myThid)
+CSR
+CSR        nArr=sNx*sNy*nSx*nSy/MSfacX/MSfacY*365
+CSR        helpj=-1
+CSR        call write_glvec_rl(fnamegenOutlo,' ',
+CSR     I   xx_gen_scale_lo,nArr,helpj,myThid)
 #endif /* MULTISCALE_COUPLING_TAPES */
 
 #ifndef ALLOW_OPENAD

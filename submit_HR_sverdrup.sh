@@ -2,7 +2,7 @@
 #SBATCH -J labseaHRswot_adj
 #SBATCH -o labseaHRswot_adj.%j.out
 #SBATCH -e labseaHRswot_adj.%j.err
-#SBATCH -t 6:00:00
+#SBATCH -t 24:00:00
 #SBATCH -N 6 
 #SBATCH -n 103
 #SBATCH --mail-user=sreich@utexas.edu
@@ -182,6 +182,10 @@ date > run.MITGCM.timing_adj
 mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout_adj
 date >> run.MITGCM.timing_adj
 
+sed -i 's/376/0/g' divided.ctrl
+date > run.MITGCM.timing_adj
+mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout_adj
+date >> run.MITGCM.timing_adj
 
 cd ..
 

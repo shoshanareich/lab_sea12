@@ -2,7 +2,7 @@
 #SBATCH -J labseaHRswot_adj
 #SBATCH -o labseaHRswot_adj.%j.out
 #SBATCH -e labseaHRswot_adj.%j.err
-#SBATCH -t 6:00:00
+#SBATCH -t 12:00:00
 #SBATCH -N 6 
 #SBATCH -n 103
 #SBATCH --mail-user=sreich@utexas.edu

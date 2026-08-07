@@ -67,16 +67,12 @@ grid_lr.hFacC.values = hfacc_lr
 xc_lr = rdmds(grid_dir_lr + 'XC')
 yc_lr = rdmds(grid_dir_lr + 'YC')
 ny, nx = xc_lr.shape
-tile_size = 32 
+# LR tiling only 
+# The HR tiling (32x32) does not enter this script 
+tile_size = 24
 
 npx_lr = 5
 npy_lr = 4
-
-#npx_hr = 20
-#npy_hr = 16
-npx_hr = 15 
-npy_hr = 12
-
 
 ### Build lr_ocean_map
 surface_mask = hfacc_lr[0, :, :]

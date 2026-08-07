@@ -181,7 +181,7 @@ C --- Get appropriate mask for ctrl variable
       CALL CTRL_GET_MASK2D(xx_genarr2d_file(iarr), mask2D, myThid)
 
 #ifdef MULTISCALE_COUPLING_TAPES
-      write(*,*) 'genarr2d: i,j,tmpcount,xx_gen_lo'
+CSR   write(*,*) 'genarr2d: i,j,tmpcount,xx_gen_lo'
       DO bj = myByLo(myThid), myByHi(myThid)
        DO bi = myBxLo(myThid), myBxHi(myThid)
         do j=1,sNy/MSfacY            !1:16
@@ -207,7 +207,7 @@ C --- Get appropriate mask for ctrl variable
            xx_gen_lo(i,j,bi,bj)=xx_gen_lo(i,j,bi,bj)/tmpcount
            fld_lo(i,j,bi,bj)=fld_lo(i,j,bi,bj)/tmpcount
           endif
-          write(*,*) i,j,tmpcount,xx_gen_lo(i,j,bi,bj),fld_lo(i,j,bi,bj)
+CSR       write(*,*) i,j,tmpcount,xx_gen_lo(i,j,bi,bj),fld_lo(i,j,bi,bj)
          enddo     !i
         enddo      !j
        ENDDO        !bi
@@ -269,7 +269,7 @@ C scale param adjustment
             fld_lo(i,j,bi,bj)=fld_lo(i,j,bi,bj)+
      &        xx_gen_lo(i,j,bi,bj)
      &              /sqrt(wgenarr2d_lo(i,j,bi,bj))
-            write(*,*) i,j,tmpcount,fld_lo(i,j,bi,bj)
+CSR         write(*,*) i,j,tmpcount,fld_lo(i,j,bi,bj)
            ELSE
             fld_lo(i,j,bi,bj)= 0. _d 0
            ENDIF    !tmpcount gt 0
@@ -513,7 +513,7 @@ C --- Get appropriate mask for ctrl variable
       CALL CTRL_GET_MASK3D(xx_genarr3d_file(iarr), mask3D, myThid)
 
 #ifdef MULTISCALE_COUPLING_TAPES
-      write(*,*) 'genarr3d: i,j,k,xx_gen_lo(i,j,k,bi,bj),tmpcount'
+CSR   write(*,*) 'genarr3d: i,j,k,xx_gen_lo(i,j,k,bi,bj),tmpcount'
       DO bj = myByLo(myThid), myByHi(myThid)
        DO bi = myBxLo(myThid), myBxHi(myThid)
         do k=1,Nr                     !1:21
@@ -540,8 +540,8 @@ C --- Get appropriate mask for ctrl variable
             xx_gen_lo(i,j,k,bi,bj)=xx_gen_lo(i,j,k,bi,bj)/tmpcount
             fld_lo(i,j,k,bi,bj)=fld_lo(i,j,k,bi,bj)/tmpcount
            endif
-           write(*,*) i,j,k,tmpcount,xx_gen_lo(i,j,k,bi,bj),
-     &                fld_lo(i,j,k,bi,bj)
+CSR        write(*,*) i,j,k,tmpcount,xx_gen_lo(i,j,k,bi,bj),
+CSR  &                fld_lo(i,j,k,bi,bj)
           enddo     !i
          enddo      !j
         enddo       !k
@@ -581,8 +581,8 @@ C     doscaling
         ENDIF
 
 #ifdef MULTISCALE_COUPLING_TAPES
-        write(*,*) 'genarr3d: ',
-     &    'i,j,k,fld_lo(i,j,k,bi,bj),tmpcount'
+CSR     write(*,*) 'genarr3d: ',
+CSR  &    'i,j,k,fld_lo(i,j,k,bi,bj),tmpcount'
         DO k = 1,Nr
          DO j=1,sNy/MSfacY            !1:16
           DO i=1,sNx/MSfacX           !1:20
@@ -610,7 +610,7 @@ C     doscaling
              fld_lo(i,j,k,bi,bj)=fld_lo(i,j,k,bi,bj)+
      &         xx_gen_lo(i,j,k,bi,bj)
      &               /sqrt(wgenarr3d_lo(i,j,k,bi,bj))
-             write(*,*) i,j,k,tmpcount,fld_lo(i,j,k,bi,bj)
+CSR          write(*,*) i,j,k,tmpcount,fld_lo(i,j,k,bi,bj)
             ELSE
              fld_lo(i,j,k,bi,bj)= 0. _d 0
             ENDIF    !tmpcount gt 0
