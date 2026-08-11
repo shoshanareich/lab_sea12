@@ -1,7 +1,7 @@
 #!/bin/bash -x
-#SBATCH -J swotArgoMG
-#SBATCH -o swotArgoMG.%j.out
-#SBATCH -e swotArgoMG.%j.err
+#SBATCH -J ArgoMG
+#SBATCH -o ArgoMG.%j.out
+#SBATCH -e ArgoMG.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
@@ -48,7 +48,8 @@ jobfile=run_optimization.bash
 #rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
 rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swotArgo_multT10_MG/
+#scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swotArgo_multT10_MG/
+scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_MG/
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
