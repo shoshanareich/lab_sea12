@@ -151,7 +151,15 @@ labsea_conda_activate() {
     local env=${1:-py38}
     case "${LABSEA_MACHINE}" in
       pfe)
-        # miniconda3/v4 module provides `source activate`, not `conda activate`
+        # Self-contained on purpose. The full incantation pfe needs is:
+        #     module use -a /swbuild/analytix/tools/modulefiles
+        #     module load miniconda3/v4
+        #     source activate py38
+        # Doing the module part here too (it is idempotent) means this works
+        # whether or not labsea_load_modules ran first -- and note that
+        # miniconda3/v4 provides `source activate`, not `conda activate`.
+        module use -a /swbuild/analytix/tools/modulefiles
+        module load miniconda3/v4
         source activate "${env}"
         ;;
       *)
