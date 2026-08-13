@@ -1,6 +1,7 @@
 import numpy as np
 import sys
-sys.path.append('/home/shoshi/MITgcm_c68r/MITgcm/utils/python/MITgcmutils')
+from machine_config import DIRROOT, add_mitgcmutils
+add_mitgcmutils()
 from MITgcmutils import rdmds
 
 nx=120
@@ -12,7 +13,7 @@ factor = 4 # lowres * factor = hires
 nxh=nx*factor
 nyh=ny*factor
 
-dirroot='/scratch/shoshi/labsea_MG_12/'
+dirroot = DIRROOT
 
 #iter = '0000'
 iter = sys.argv[1] # sys.argv[0] is name of python file

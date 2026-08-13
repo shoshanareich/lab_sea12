@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.interpolate import griddata, Rbf 
 import sys
-sys.path.append('/home/shoshi/MITgcm_c68r/MITgcm/utils/python/MITgcmutils')
+from machine_config import DIRROOT, add_mitgcmutils
+add_mitgcmutils()
 from MITgcmutils import rdmds
 
 nx=120
@@ -13,15 +14,14 @@ factor = 4 # lowres * factor = hires
 nxh=nx*factor
 nyh=ny*factor
 
-#dirroot='/home/shoshi/MITgcm_c68r/MITgcm/verification/lab_sea/'
-dirroot='/scratch/shoshi/labsea_MG_12/'
+dirroot = DIRROOT
 
 #iter = '0000'
 iter = sys.argv[1] # sys.argv[0] is name of python file
 print(iter)
 
-griddir_lr = '/scratch/shoshi/labsea_MG_12/grid_lores/'
-griddir_hr = '/scratch/shoshi/labsea_MG_12/grid_hires/'
+griddir_lr = dirroot + 'grid_lores/'
+griddir_hr = dirroot + 'grid_hires/'
 
 #dirrun_lr = dirroot + 'run_adlo_it' + iter + '/'
 #dirrun_hr = dirroot + 'run_adhi_it' + iter + '/'

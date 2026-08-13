@@ -1,16 +1,26 @@
 #!/bin/bash -x
-#SBATCH -J swot_LR6
-#SBATCH -o swot_LR6.%j.out
-#SBATCH -e swot_LR6.%j.err
-#SBATCH -t 48:00:00
-#SBATCH -N 2 
-#SBATCH -n 48
+# ---------------------------------------------------------------------------
+# run_LR6_opt.sh
+#
+# Portable across sverdrup / stampede3 / pfe: every machine-specific path,
+# module load, MPI launcher and conda activation comes from machine_config.sh.
+# Override the detected machine with:
+#     export LABSEA_MACHINE=sverdrup|stampede3|pfe
+#
+# Submit with the wrapper for your machine:
+#     ./submit.sh run_LR6_opt.sh          # detects machine, picks sbatch or qsub
+# or run directly inside an existing allocation:
+#     ./run_LR6_opt.sh
+# ---------------------------------------------------------------------------
 
-
-#--- 0.load modules ------
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/machine_config.sh"
+labsea_load_modules
 
 #---- set variables ------
-# note: for nprocs, take ntiles - length(blanklist)
+# nprocs_hr / nprocs_lr default to 103 / 16 in machine_config.sh.
+# They follow SIZE.h + data.exch2 of the build, not the machine:
+#   nprocs = (number of tiles) - (length of blankList)
+# Override below only if you point builddir_* at a different tiling.
 nprocs_lr=48
 
 iter=0
@@ -20,8 +30,7 @@ costfactor=0.95
 jobfile=run_LR6_opt.sh
 
 #--- set dir ------------
-rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
-scratchdir=/scratch/shoshi/labsea_MG_12/assim_swot_LR6/
+scratchdir=${runsroot}/assim_swot_LR6
 
 builddir_lo=${rootdir}/build_adlo6_2lev_seaice_update_mpi
 optimdir=${scratchdir}/OPTIM
@@ -70,11 +79,10 @@ while [ ! ${iter} -gt $itermax ]; do
   cp ${rootdir}/input_binaries_lores6/pickup.0000051840.data pickup.0000000001.data
   
   mkdir jra3q
-  ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
-  #ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
+  labsea_link_jra3q ./jra3q
   rm data.diagnostics
   cp ${rootdir}/input_adhi/data.diagnostics .
-#  cp /scratch/shoshi/labsea_MG_12/test_lores/run_spinup_1yr_C/data.diagnostics .
+#  cp ${runsroot}/test_lores/run_spinup_1yr_C/data.diagnostics .
 
   ##--- 5. linking xx_ fields ------
   if [ ${iter} -lt 1 ]; then
@@ -104,11 +112,11 @@ EOF
   
   set -x
   date > run.MITGCM.timing
-  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout # run forward
-  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout # run first chunk of DivA
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout # run forward
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout # run first chunk of DivA
 
   sed -i 's/376/0/g' divided.ctrl 
-  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout # run rest of DivA
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout # run rest of DivA
   date >> run.MITGCM.timing
   cd ..
 

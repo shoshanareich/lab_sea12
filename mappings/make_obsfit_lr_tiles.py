@@ -5,8 +5,8 @@ import sys
 import glob
 import xmitgcm
 
-#sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
-sys.path.append('/nobackup/sreich/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
+from machine_config import DIRROOT, add_mitgcmutils
+add_mitgcmutils()
 from MITgcmutils import rdmds
 
 #fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3'
@@ -18,7 +18,7 @@ rundirs = sys.argv[3]
 fname = sys.argv[4]
 fnames = [fname, 'ad'+fname]
 
-root_dir = '/nobackup/sreich/labsea_runs/'
+root_dir = DIRROOT
 
 run_dir = rundirs + '/run_adhi_it' + iter + ext + '/'
 

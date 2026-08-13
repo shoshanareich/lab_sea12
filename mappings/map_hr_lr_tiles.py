@@ -5,13 +5,18 @@ import glob
 import os
 
 import sys
-#sys.path.append('/home/shoshi/MITgcm_c68r/MITgcm/utils/python/MITgcmutils')
-sys.path.append('/work2/08382/shoshi/stampede3/MITgcm_c69j/MITgcm/utils/python/MITgcmutils')
+from machine_config import DIRROOT, add_mitgcmutils
+add_mitgcmutils()
 from MITgcmutils import rdmds
 
-sys.path.append('/work2/08382/shoshi/stampede3/jupyter_notebooks')
+# read_write.py also lives in this directory, so the local one is picked up.
 from read_write import *
 
+# NOTE: map_ocean_tiles is NOT in this repo -- it lives outside, under
+# jupyter_notebooks/DivA/swot_assim/ on stampede3 only. This script therefore
+# still only runs on stampede3. Copy map_ocean_tiles.py into mappings/ to make
+# it portable. (No run_*.sh currently calls this script; make_prof_lr_tiles.py
+# supersedes it.)
 sys.path.append('/work2/08382/shoshi/stampede3/jupyter_notebooks/DivA/swot_assim/')
 import map_ocean_tiles
 
@@ -21,9 +26,7 @@ fnames = [fname, 'ad'+fname]
 iter = sys.argv[1]
 ext = sys.argv[2]
 
-root_dir = '/scratch/08382/shoshi/labsea_runs/'
-#run_dir = '/scratch/shoshi/labsea_MG_12/assim_argo_MG/run_adhi_it' + iter + ext + '/'
-#run_dir_lo = '/scratch/shoshi/labsea_MG_12/assim_argo_MG/run_adlo_it' + iter + ext + '/'
+root_dir = DIRROOT
 
 run_dir = root_dir + 'assim_argo_MG/run_adhi_it' + iter + ext + '/'
 run_dir_lo = root_dir + 'assim_argo_MG/run_adlo_it' + iter + ext + '/'

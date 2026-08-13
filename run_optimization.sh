@@ -1,42 +1,26 @@
 #!/bin/bash -x
-#SBATCH -J ArgoMG
-#SBATCH -o ArgoMG.%j.out
-#SBATCH -e ArgoMG.%j.err
-#SBATCH -t 48:00:00
-#SBATCH -p skx
-#SBATCH -N 6 
-#SBATCH -n 103
-#SBATCH -A OCE23001
-#SBATCH --mail-user=sreich@utexas.edu
-#SBATCH --mail-type=begin
-#SBATCH --mail-type=end
+# ---------------------------------------------------------------------------
+# run_optimization.sh
+#
+# Portable across sverdrup / stampede3 / pfe: every machine-specific path,
+# module load, MPI launcher and conda activation comes from machine_config.sh.
+# Override the detected machine with:
+#     export LABSEA_MACHINE=sverdrup|stampede3|pfe
+#
+# Submit with the wrapper for your machine:
+#     ./submit.sh run_optimization.sh          # detects machine, picks sbatch or qsub
+# or run directly inside an existing allocation:
+#     ./run_optimization.sh
+# ---------------------------------------------------------------------------
 
-## SVERDRUP
-##SBATCH -N 8
-##SBATCH -n 180
-
-#--- 0.load modules ------
-#module purge
-##module load intel openmpi netcdf-fortran
-#module load intel/2023.1.0 openmpi4/4.1.5 phdf5/1.14.1 netcdf-fortran/4.6.0 netcdf/4.9.0 prun
-#echo $LD_LIBRARY_PATH
-
-module purge; module load intel/25.1 impi/21.15 netcdf/4.9.2 hdf5/1.14.6
-
-#ulimit -s hard
-#ulimit -u hard
-ulimit -s unlimited
-ulimit -v unlimited
-#export IBRUN_TASKS_PER_NODE=16
-export I_MPI_DEBUG=4
-
-#export UCX_MEMTYPE_CACHE=n
-#export UCX_TLS=rc,self,sm
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/machine_config.sh"
+labsea_load_modules
 
 #---- set variables ------
-# note: for nprocs, take ntiles - length(blanklist)
-nprocs_hr=103
-nprocs_lr=16
+# nprocs_hr / nprocs_lr default to 103 / 16 in machine_config.sh.
+# They follow SIZE.h + data.exch2 of the build, not the machine:
+#   nprocs = (number of tiles) - (length of blankList)
+# Override below only if you point builddir_* at a different tiling.
 
 iter=0
 itermax=10
@@ -45,11 +29,7 @@ costfactor=0.95
 jobfile=run_optimization.bash
 
 #--- set dir ------------
-#rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
-#scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG
-rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-#scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swotArgo_multT10_MG/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_argo_MG/
+scratchdir=${runsroot}/assim_argo_MG
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
@@ -83,9 +63,7 @@ while [ ! ${iter} -gt $itermax ]; do
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_hr} ./mitgcmuv_ad > stdout
-#  ibrun -npernode 16 ./mitgcmuv_ad > stdout
+  labsea_run ${nprocs_hr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
   cd ..
 
@@ -97,8 +75,7 @@ while [ ! ${iter} -gt $itermax ]; do
     mkdir -p $workdir_lo;
   fi
 
-  source $(conda info --base)/etc/profile.d/conda.sh
-  conda activate py38
+  labsea_conda_activate
   # create low-res xx_[ctrl]
   python3 ${rootdir}/mappings/make_cost_cp_v2.py "$ext2" "" "$scratchdir" "False"
   ## profiles retiling 
@@ -106,7 +83,7 @@ while [ ! ${iter} -gt $itermax ]; do
   python3 ${rootdir}/mappings/make_obsfit_lr_tiles.py "$ext2" "" "$scratchdir" "rads_20240101_20240308" 
 #  python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES"
   python3 ${rootdir}/mappings/make_prof_lr_tiles.py "$ext2" "" "$scratchdir" "ARGO_WO_2024_PFL_D_labsea_splitcost"
-  conda deactivate
+  labsea_conda_deactivate
 
   cd $workdir_lo
 
@@ -122,15 +99,13 @@ while [ ! ${iter} -gt $itermax ]; do
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
 
 #  sed -i 's/61/0/g' divided.ctrl
   sed -i 's/376/0/g' divided.ctrl
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout
   date >> run.MITGCM.timing
   cd ..
 
@@ -201,8 +176,7 @@ EOF
   
   set -x
   date > run.MITGCM.timing
-#  mpiexec -np ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
-  ibrun -n ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
+  labsea_run ${nprocs_lr} ./mitgcmuv_ad > stdout #2>&1 &
 
 #  # Get the PID of the executable
 #  EXEC_PID=$!
@@ -226,10 +200,9 @@ EOF
 
 # --- 5. interpolate adjustments to high-res -----------
 echo $(printf "%04d" $((iter+1)))  # "000$((iter+1))"
-source $(conda info --base)/etc/profile.d/conda.sh
-conda activate py38
+labsea_conda_activate
 python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter+1))) $workdir_pup  #"000$((iter+1))" $interp_type
-conda deactivate
+labsea_conda_deactivate
 
 #  let iter=6
   let iter=iter+1
