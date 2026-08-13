@@ -194,18 +194,27 @@ done
 # it there -- it is pre-staged per experiment. If it is missing the loop dies
 # at stage 3, after the HR forward AND the LR adjoint have both run.
 echo
-echo "[7] optim.x (stage 3), searched under runsroot"
-found_optim=0
-for d in "${runsroot}"/*/OPTIM "${runsroot}"/OPTIM; do
-    [ -x "${d}/optim.x" ] || continue
-    ok "${d}/optim.x"
-    found_optim=$(( found_optim + 1 ))
+echo "[7] optim.x (stage 3), per driver"
+note "each driver runs \${scratchdir}/OPTIM/optim.x; nothing stages it for you"
+ready_any=0
+for f in "${rootdir}"/run_*.sh; do
+    base=$(basename "${f}")
+    [ "${base}" = "run_selftest.sh" ] && continue
+    sd=$(grep -m1 '^scratchdir=' "${f}" | cut -d= -f2-)
+    [ -z "${sd}" ] && continue
+    eval "sd=\"${sd}\""
+    if [ -x "${sd}/OPTIM/optim.x" ]; then
+        printf '  PASS  %-34s %s\n' "${base}" "${sd#"${runsroot}"/}"
+        ready_any=$(( ready_any + 1 ))
+    else
+        printf '  ..    %-34s %s  <- no optim.x (stage 3 would fail)\n' \
+               "${base}" "${sd#"${runsroot}"/}"
+    fi
 done
-if [ ${found_optim} -eq 0 ]; then
-    warn "no optim.x found under ${runsroot}/*/OPTIM"
-    note "stage 3 will fail unless the driver's \${scratchdir}/OPTIM has one"
+if [ ${ready_any} -eq 0 ]; then
+    warn "no driver has an optim.x on ${LABSEA_MACHINE}"
 else
-    note "check the OPTIM dir matching your driver's scratchdir specifically"
+    note "drivers marked '..' simply are not set up on this machine yet"
 fi
 
 # --- verdict ---------------------------------------------------------------
