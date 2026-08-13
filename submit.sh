@@ -55,8 +55,10 @@ case "${scheduler}" in
     grep -qE '^#SBATCH[[:space:]]+(-J|--job-name)' "${wrapper}" || naming+=(-J "${job}")
     grep -qE '^#SBATCH[[:space:]]+(-o|--output)'   "${wrapper}" || naming+=(-o "${here}/${job}.%j.out")
     grep -qE '^#SBATCH[[:space:]]+(-e|--error)'    "${wrapper}" || naming+=(-e "${here}/${job}.%j.err")
+    # LABSEA_ROOT tells the wrapper where the checkout is: the scheduler runs
+    # it from a spool dir, so it cannot work that out for itself.
     set -- sbatch "${naming[@]}" \
-                  --export=ALL,DRIVER="${driver}" \
+                  --export=ALL,DRIVER="${driver}",LABSEA_ROOT="${here}" \
                   "$@" "${wrapper}"
     ;;
 
@@ -70,7 +72,7 @@ case "${scheduler}" in
     grep -qE '^#PBS[[:space:]]+-o' "${wrapper}" || naming+=(-o "${here}/${job}.out")
     grep -qE '^#PBS[[:space:]]+-e' "${wrapper}" || naming+=(-e "${here}/${job}.err")
     set -- qsub "${naming[@]}" \
-                -v DRIVER="${driver}" \
+                -v DRIVER="${driver}",LABSEA_ROOT="${here}" \
                 "$@" "${wrapper}"
     ;;
 

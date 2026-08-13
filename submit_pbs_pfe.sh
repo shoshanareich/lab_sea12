@@ -17,7 +17,18 @@
 # Sizing: sky_ele is 40 cores/node, so 103 HR ranks -> 3 nodes.
 # ---------------------------------------------------------------------------
 
-source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/machine_config.sh"
+# NOTE: SLURM and PBS copy the batch script into a spool directory before
+# running it, so BASH_SOURCE does NOT point at the repo at run time.
+# Use the path submit.sh records in LABSEA_ROOT, falling back to the
+# scheduler's own submit-directory variable for a hand-rolled submission.
+repo="${LABSEA_ROOT:-${PBS_O_WORKDIR:-}}"
+if [ -z "${repo}" ] || [ ! -f "${repo}/machine_config.sh" ]; then
+    echo "submit_pbs_pfe.sh: cannot locate the lab_sea12 checkout." >&2
+    echo "  Expected machine_config.sh in: ${repo:-<unset>}" >&2
+    echo "  Use ./submit.sh <driver.sh>, or export LABSEA_ROOT=<checkout>." >&2
+    exit 1
+fi
+source "${repo}/machine_config.sh"
 
 if [ -z "${DRIVER}" ]; then
     echo "submit_pbs_pfe.sh: DRIVER is not set." >&2
@@ -26,5 +37,5 @@ if [ -z "${DRIVER}" ]; then
     exit 1
 fi
 
-cd "${rootdir}" || exit 1
+cd "${repo}" || exit 1
 exec bash "./${DRIVER}"
