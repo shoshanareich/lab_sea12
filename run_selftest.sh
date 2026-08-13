@@ -52,13 +52,20 @@ fi
                      || bad "runsroot missing: ${runsroot}"
 
 # --- 2. modules ------------------------------------------------------------
+# IMPORTANT: do NOT pipe labsea_load_modules -- a pipeline runs it in a
+# subshell and every `module load` is discarded, so later checks would run
+# without the environment they need. Redirect to a file instead.
 echo
 echo "[2] labsea_load_modules"
-if labsea_load_modules 2>&1 | sed 's/^/        /'; then
+modlog=$(mktemp "${TMPDIR:-/tmp}/labsea_mod.XXXXXX")
+if labsea_load_modules > "${modlog}" 2>&1; then
     ok "labsea_load_modules returned cleanly"
 else
     bad "labsea_load_modules failed"
 fi
+sed 's/^/        /' "${modlog}" | head -20
+rm -f "${modlog}"
+note "loaded: $( { module list; } 2>&1 | tr '\n' ' ' | sed 's/  */ /g' | cut -c1-240 )"
 
 # --- 3. the executables the drivers expect ---------------------------------
 echo
@@ -76,12 +83,20 @@ done
 # allocation actually gives us ranks.
 echo
 echo "[4] labsea_run (mpi_launch = '${mpi_launch}')"
-if out=$(labsea_run 2 hostname 2>&1); then
+note "launcher: $(command -v "${mpi_launch%% *}" 2>/dev/null || echo '<NOT ON PATH>')"
+if out=$(labsea_run 2 /bin/hostname 2>&1); then
     ok "launched 2 ranks"
     echo "${out}" | sed 's/^/        /' | head -4
 else
     bad "labsea_run failed:"
     echo "${out}" | sed 's/^/        /' | head -6
+    # HPE MPT (pfe) can refuse to launch a binary that never calls MPI_Init,
+    # so a failure here on a serial command is not proof that the real model
+    # launch is broken. Retry with the LR executable's --help-ish no-op is not
+    # safe, so just report enough to tell the two cases apart.
+    note "if this says 'could not run executable' on pfe, check whether an MPI"
+    note "module (e.g. mpi-hpe/mpt) is loaded -- labsea_load_modules does not"
+    note "load one, and confirm with a real mitgcmuv_ad launch before trusting it."
 fi
 
 # --- 5. conda + the Python side of the config ------------------------------
@@ -105,6 +120,9 @@ print('MITgcmutils OK')
     labsea_conda_deactivate 2>/dev/null
 else
     bad "labsea_conda_activate failed"
+    note "conda   : $(command -v conda 2>/dev/null || echo '<not on PATH>')"
+    note "activate: $(command -v activate 2>/dev/null || echo '<not on PATH>')"
+    note "on pfe this comes from 'module load miniconda3/v4' in labsea_load_modules"
 fi
 
 # --- 6. grid dirs the mapping scripts read ---------------------------------
