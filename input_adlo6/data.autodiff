@@ -8,7 +8,7 @@
  useKPPinAdMode = .FALSE.,
  useGMRediInAdMode = .FALSE.,
  useSEAICEInAdMode = .FALSE.,
-# viscFacInAd = 10.,
+ viscFacInAd = 2.,
 #for multigrid:
  MSfacX = 1,
  MSfacY = 1,

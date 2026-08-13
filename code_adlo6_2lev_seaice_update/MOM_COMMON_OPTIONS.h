@@ -31,7 +31,7 @@ C allow full 3D specification of horizontal Laplacian Viscosity
 #define ALLOW_3D_VISCAH
 
 C allow full 3D specification of horizontal Biharmonic Viscosity
-#undef ALLOW_3D_VISCA4
+#define ALLOW_3D_VISCA4
 
 C Compute bottom drag coefficents, following the logarithmic law of the wall,
 C as a function of grid cell thickness and roughness length
