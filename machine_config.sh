@@ -132,6 +132,20 @@ labsea_load_modules() {
         ulimit -v unlimited
         ;;
       pfe)
+        # Load the stack explicitly rather than inheriting it from ~/.profile.
+        # A PBS job starts a login shell so the profile's modules were showing
+        # up anyway, but depending on that is fragile -- it would break the day
+        # the profile changes, 15 minutes into an HR forward. These are the
+        # versions the known-good pfe job script used.
+        ulimit -s unlimited
+        module purge
+        module load comp-intel/2020.4.304
+        module load szip/2.1.1
+        module load mpi-hpe/mpt
+        module load hdf4/4.2.12
+        module load hdf5/1.8.18_mpt
+        module load netcdf/4.4.1.1_mpt
+        # conda lives outside the default module path
         module use -a /swbuild/analytix/tools/modulefiles
         module load miniconda3/v4
         export FORT_BUFFERED=1

@@ -22,6 +22,7 @@ source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/machine_config.sh"
 fails=0
 ok()   { printf '  PASS  %s\n' "$*"; }
 bad()  { printf '  FAIL  %s\n' "$*"; fails=$(( fails + 1 )); }
+warn() { printf '  WARN  %s\n' "$*"; }
 note() { printf '  ..    %s\n' "$*"; }
 
 echo "==================================================================="
@@ -88,15 +89,53 @@ if out=$(labsea_run 2 /bin/hostname 2>&1); then
     ok "launched 2 ranks"
     echo "${out}" | sed 's/^/        /' | head -4
 else
-    bad "labsea_run failed:"
-    echo "${out}" | sed 's/^/        /' | head -6
-    # HPE MPT (pfe) can refuse to launch a binary that never calls MPI_Init,
-    # so a failure here on a serial command is not proof that the real model
-    # launch is broken. Retry with the LR executable's --help-ish no-op is not
-    # safe, so just report enough to tell the two cases apart.
-    note "if this says 'could not run executable' on pfe, check whether an MPI"
-    note "module (e.g. mpi-hpe/mpt) is loaded -- labsea_load_modules does not"
-    note "load one, and confirm with a real mitgcmuv_ad launch before trusting it."
+    # HPE MPT (pfe) refuses to launch a binary that never calls MPI_Init, so
+    # failing on /bin/hostname proves nothing either way. Build a real MPI
+    # program and retry -- that IS decisive.
+    note "serial launch refused, which is expected under HPE MPT; retrying"
+    note "with a real MPI binary, which is the decisive test:"
+    echo "${out}" | sed 's/^/        /' | head -3
+
+    mpidir=$(mktemp -d "${TMPDIR:-/tmp}/labsea_mpi.XXXXXX")
+    cat > "${mpidir}/hello.c" <<'CEOF'
+#include <mpi.h>
+#include <stdio.h>
+#include <unistd.h>
+int main(int argc, char **argv) {
+    int rank, size; char host[256];
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    gethostname(host, sizeof host);
+    printf("rank %d of %d on %s\n", rank, size, host);
+    MPI_Finalize();
+    return 0;
+}
+CEOF
+    cc=$(command -v mpicc || command -v icc || command -v gcc)
+    built=false
+    if [ -n "${cc}" ]; then
+        if   "${cc}" -o "${mpidir}/hello" "${mpidir}/hello.c"        >"${mpidir}/build.log" 2>&1; then built=true
+        elif "${cc}" -o "${mpidir}/hello" "${mpidir}/hello.c" -lmpi >>"${mpidir}/build.log" 2>&1; then built=true
+        fi
+    fi
+
+    if ${built}; then
+        if out2=$(labsea_run 2 "${mpidir}/hello" 2>&1); then
+            ok "launched 2 ranks with a real MPI binary"
+            echo "${out2}" | sed 's/^/        /' | head -4
+            note "the serial refusal above is an MPT quirk, not a problem"
+        else
+            bad "MPI launch genuinely failed:"
+            echo "${out2}" | sed 's/^/        /' | head -6
+        fi
+    else
+        warn "could not build an MPI test binary -- MPI launch INCONCLUSIVE"
+        note "compiler tried: ${cc:-<none found>}"
+        [ -f "${mpidir}/build.log" ] && tail -3 "${mpidir}/build.log" | sed 's/^/        /'
+        note "confirm with a short real mitgcmuv_ad launch before trusting it"
+    fi
+    rm -rf "${mpidir}"
 fi
 
 # --- 5. conda + the Python side of the config ------------------------------
