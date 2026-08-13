@@ -143,18 +143,36 @@ echo
 echo "[5] labsea_conda_activate + mappings/machine_config.py"
 if labsea_conda_activate 2>/dev/null; then
     ok "conda env activated ($(python3 --version 2>&1))"
+    # Import everything the mapping scripts actually use, not just
+    # MITgcmutils -- a missing xmitgcm would not surface until stage 2 of
+    # iteration 0, after the HR forward has already burned hours.
     if out=$(cd "${rootdir}/mappings" && python3 -c "
 import machine_config as m
 m.add_mitgcmutils()
-from MITgcmutils import rdmds
 print('machine=%s rootdir=%s' % (m.MACHINE, m.ROOTDIR))
-print('MITgcmutils OK')
+missing = []
+import importlib
+for mod in ['numpy', 'scipy.interpolate', 'xarray', 'xmitgcm',
+            'skimage.restoration', 'MITgcmutils']:
+    try:
+        importlib.import_module(mod)
+    except Exception as e:
+        missing.append('%s (%s)' % (mod, type(e).__name__))
+# the local helpers the scripts do 'from ... import *' on
+for mod in ['file_utils', 'read_write']:
+    try:
+        importlib.import_module(mod)
+    except Exception as e:
+        missing.append('%s (%s)' % (mod, type(e).__name__))
+if missing:
+    raise SystemExit('MISSING: ' + ', '.join(missing))
+print('all mapping-script imports OK')
 " 2>&1); then
-        ok "machine_config.py + MITgcmutils import"
+        ok "machine_config.py + every mapping-script import"
         echo "${out}" | sed 's/^/        /'
     else
         bad "python import failed:"
-        echo "${out}" | tail -4 | sed 's/^/        /'
+        echo "${out}" | tail -5 | sed 's/^/        /'
     fi
     labsea_conda_deactivate 2>/dev/null
 else
@@ -170,6 +188,25 @@ echo "[6] grid directories under runsroot"
 for g in grid_hires grid_lores grid_lores_cleanbathy grid_lores_cleanbathy_v2 grid_hires_cleanbathy; do
     [ -d "${runsroot}/${g}" ] && ok "${g}" || bad "${g} missing under ${runsroot}"
 done
+
+# --- 7. optim.x ------------------------------------------------------------
+# Stage 3 runs ${scratchdir}/OPTIM/optim.x. Nothing in the link scripts puts
+# it there -- it is pre-staged per experiment. If it is missing the loop dies
+# at stage 3, after the HR forward AND the LR adjoint have both run.
+echo
+echo "[7] optim.x (stage 3), searched under runsroot"
+found_optim=0
+for d in "${runsroot}"/*/OPTIM "${runsroot}"/OPTIM; do
+    [ -x "${d}/optim.x" ] || continue
+    ok "${d}/optim.x"
+    found_optim=$(( found_optim + 1 ))
+done
+if [ ${found_optim} -eq 0 ]; then
+    warn "no optim.x found under ${runsroot}/*/OPTIM"
+    note "stage 3 will fail unless the driver's \${scratchdir}/OPTIM has one"
+else
+    note "check the OPTIM dir matching your driver's scratchdir specifically"
+fi
 
 # --- verdict ---------------------------------------------------------------
 echo
