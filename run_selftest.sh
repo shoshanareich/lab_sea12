@@ -40,8 +40,14 @@ echo
 echo "[1] repo resolution"
 [ -f "${rootdir}/machine_config.sh" ] && ok "machine_config.sh found under rootdir" \
                                       || bad "machine_config.sh NOT under rootdir=${rootdir}"
-[ "$(pwd)" = "${rootdir}" ] && ok "cwd is rootdir" \
-                           || note "cwd $(pwd) != rootdir ${rootdir} (fine if you ran this by hand)"
+# Compare resolved paths: on pfe /nobackup/sreich is a symlink to
+# /nobackupp18/sreich, so cwd and rootdir are the same place under two names.
+if [ "$(readlink -f "$(pwd)")" = "$(readlink -f "${rootdir}")" ]; then
+    ok "cwd resolves to rootdir"
+    [ "$(pwd)" != "${rootdir}" ] && note "(via symlink: $(pwd) -> ${rootdir})"
+else
+    note "cwd $(pwd) != rootdir ${rootdir} (fine if you ran this by hand)"
+fi
 [ -d "${runsroot}" ] && ok "runsroot exists: ${runsroot}" \
                      || bad "runsroot missing: ${runsroot}"
 
