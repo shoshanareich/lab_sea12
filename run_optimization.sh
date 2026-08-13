@@ -5,7 +5,7 @@
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6 
-#SBATCH -n 180
+#SBATCH -n 103
 #SBATCH -A OCE23001
 #SBATCH --mail-user=sreich@utexas.edu
 #SBATCH --mail-type=begin
@@ -35,7 +35,7 @@ export I_MPI_DEBUG=4
 
 #---- set variables ------
 # note: for nprocs, take ntiles - length(blanklist)
-nprocs_hr=180
+nprocs_hr=103
 nprocs_lr=16
 
 iter=0
