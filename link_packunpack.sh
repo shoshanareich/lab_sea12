@@ -4,7 +4,11 @@
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/machine_config.sh"
 
 iter=$1
-iter=$((iter+1))
+# $1 arrives zero-padded from the driver ($ext2, e.g. "0010"). Bash reads a
+# leading-zero literal as OCTAL, so plain $((iter+1)) errors at 0008/0009
+# ("value too great for base") and silently gives wrong answers from 0010 on
+# (0010 -> octal 8 -> 9). 10# forces base 10.
+iter=$((10#$1 + 1))
 optimext=$(printf "%04d" $iter)
 workdir=$2
 optimdir=$3
