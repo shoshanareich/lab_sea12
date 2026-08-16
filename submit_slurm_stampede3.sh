@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J ArgoMG
-#SBATCH -o ArgoMG.%j.out
-#SBATCH -e ArgoMG.%j.err
+#SBATCH -J swotMG
+#SBATCH -o swotMG.%j.out
+#SBATCH -e swotMG.%j.err
 #SBATCH -t 48:00:00
 #SBATCH -p skx
 #SBATCH -N 6
