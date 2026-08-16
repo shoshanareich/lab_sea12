@@ -2,6 +2,7 @@
 #PBS -q long
 #PBS -l select=3:ncpus=40:model=sky_ele
 #PBS -l walltime=48:00:00
+#PBS -N argoMG
 #PBS -o argoMG.out
 #PBS -e argoMG.err
 #PBS -W umask=33

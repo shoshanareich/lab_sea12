@@ -121,7 +121,7 @@ run_one() {
 }
 
 # --- representative arguments ---------------------------------------------
-scratch="${runsroot}/assim_argo_MG"
+scratch="${runsroot}/assim_swot_MG"
 bhi="${rootdir}/build_adhi_2lev_seaice_update_mpi"
 blo="${rootdir}/build_adlo_2lev_seaice_update_mpi"
 

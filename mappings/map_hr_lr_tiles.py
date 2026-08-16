@@ -28,8 +28,8 @@ ext = sys.argv[2]
 
 root_dir = DIRROOT
 
-run_dir = root_dir + 'assim_argo_MG/run_adhi_it' + iter + ext + '/'
-run_dir_lo = root_dir + 'assim_argo_MG/run_adlo_it' + iter + ext + '/'
+run_dir = root_dir + 'assim_swot_MG/run_adhi_it' + iter + ext + '/'
+run_dir_lo = root_dir + 'assim_swot_MG/run_adlo_it' + iter + ext + '/'
 
 grid_dir_hr = root_dir + 'grid_hires/'
 grid_dir_lr = root_dir + 'grid_lores/'

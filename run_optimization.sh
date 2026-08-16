@@ -29,7 +29,7 @@ costfactor=0.95
 jobfile=run_optimization.bash
 
 #--- set dir ------------
-scratchdir=${runsroot}/assim_argo_MG
+scratchdir=${runsroot}/assim_swot_MG
 
 builddir_hi=${rootdir}/build_adhi_2lev_seaice_update_mpi
 builddir_lo=${rootdir}/build_adlo_2lev_seaice_update_mpi
