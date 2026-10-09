@@ -122,8 +122,8 @@
  pChkptFreq=2592000.,
  chkptFreq= 0.,
  dumpFreq = 0.,
- monitorFreq=864000.,
- adjMonitorFreq=864000.,
+ monitorFreq=86400.,
+ adjMonitorFreq=86400.,
  adjDumpFreq=0.,
  &
 

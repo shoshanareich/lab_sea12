@@ -1,17 +1,13 @@
 #!/bin/bash -x
-#SBATCH -J labseaMGswot_iter5
-#SBATCH -o labseaMGswot_iter5.%j.out
-#SBATCH -e labseaMGswot_iter5.%j.err
+#SBATCH -J HR_diags
+#SBATCH -o HR_diags.%j.out
+#SBATCH -e HR_diags.%j.err
 #SBATCH -t 6:00:00
-#SBATCH -p skx
 #SBATCH -N 6 
-#SBATCH -n 180
-#SBATCH -A OCE23001
-#SBATCH --mail-user=sreich@utexas.edu
-#SBATCH --mail-type=begin
-#SBATCH --mail-type=end
+#SBATCH -n 103
 
-module purge; module load intel/25.1 impi/21.15 netcdf/4.9.2 hdf5/1.14.6
+module load intel impi netcdf netcdf-fortran phdf5
+ulimit -s unlimited
 
 #ulimit -s hard
 #ulimit -u hard
@@ -20,35 +16,33 @@ ulimit -v unlimited
 #export IBRUN_TASKS_PER_NODE=16
 export I_MPI_DEBUG=4
 
-iter=5
-optimext=0005
-nprocs_hr=180
+iter=0
+optimext=0000
+nprocs_hr=103
 
 #--- 2.set dir ------------
-#rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
-#datadir=/home/shoshi/MITgcm_obsfit/lab_sea12/
-#scratchdir=/scratch/shoshi/labsea_MG_12/assim_argo_MG/
-rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
+datadir=/home/shoshi/MITgcm_c69j/lab_sea12/
+scratchdir=/scratch/shoshi/labsea_MG_12/
+#rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
 #scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG/
-scratchdir=/scratch/08382/shoshi/labsea_runs/assim_swot_MG/
 dirrun_pup=${scratchdir}/run_adlo_packunpack/
 
 hr_dir_iter0=${scratchdir}/run_adhi_it0000
 
 builddir=${rootdir}/build_adhi_2lev_seaice_update_mpi
 
-echo $(printf "%04d" $((iter)))  
-source $(conda info --base)/etc/profile.d/conda.sh
-conda activate py38
-python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter))) $dirrun_pup
-conda deactivate
+#echo $(printf "%04d" $((iter)))  
+#source $(conda info --base)/etc/profile.d/conda.sh
+#conda activate py38
+#python3 ${rootdir}/mappings/interp_xx_lores_to_hires_itX_v2.py $(printf "%04d" $((iter))) $dirrun_pup
+#conda deactivate
 
 
 ext2=$(printf "%04d" $iter)
 
 
-workdir_hi=${scratchdir}/run_adhi_it${ext2}_halfredux
+workdir_hi=${scratchdir}/run_hi_63days_diags
 
 if [ ! -d $workdir_hi ]; then
   mkdir -p $workdir_hi;
@@ -68,17 +62,14 @@ ln -s ${datadir}/input_binaries_exf/* .
 ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
 ln -s ${datadir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
 ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
-ln -s ${datadir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES.nc .
+ln -s ${datadir}/input_binaries_hires/swot*.nc .
 ln -s ${datadir}/input_binaries_hires/rads_20240101_20240308.nc .
 ln -s ${datadir}/input_binaries_hires/rads_* .
 ln -s ${datadir}/input_binaries_lores/slaerr_03m.bin .
-ln -s ${datadir}/input_weights_hires/*_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin .
+ln -s ${datadir}/input_weights_hires/*_jra3q_weights_2024_deseasonalized.bin .
+ln -s ${datadir}/input_weights_hires/*_jra3q_weights_2024_deseasonalized_minseason.bin .
 ln -s ${datadir}/input_weights_hires/*fromASTE_*.bin .
 ln -s ${datadir}/input_binaries_hires/diffkr_r4_HR.bin .
-#cp /scratch/shoshi/labsea_MG_12//run_hi_1yr_jra3q_B/pickup_seaice.0000103680.meta pickup_seaice.0000000001.meta
-#cp /scratch/shoshi/labsea_MG_12//run_hi_1yr_jra3q_B/pickup_seaice.0000103680.data pickup_seaice.0000000001.data
-#cp /scratch/shoshi/labsea_MG_12//run_hi_1yr_jra3q_B/pickup.0000103680.meta pickup.0000000001.meta
-#cp /scratch/shoshi/labsea_MG_12//run_hi_1yr_jra3q_B/pickup.0000103680.data pickup.0000000001.data
 cp ${datadir}/input_binaries_hires/pickup_seaice.0000103680.meta pickup_seaice.0000000001.meta
 cp ${datadir}/input_binaries_hires/pickup_seaice.0000103680.data pickup_seaice.0000000001.data
 cp ${datadir}/input_binaries_hires/pickup.0000103680.meta pickup.0000000001.meta
@@ -94,60 +85,60 @@ cp ${datadir}/input_binaries_hires/smooth2Dnorm001.meta ./smooth2Dnorm000.meta
 cp ${datadir}/input_binaries_hires/smooth2Dnorm001.data ./smooth2Dnorm000.data
 cp ${datadir}/input_binaries_hires/smooth*norm* .
 mkdir jra3q
-#ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
-ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
+ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+#ln -s /scratch/08382/shoshi/jra3q/jra3q_*_2024 ./jra3q/
 
 #-- swap out data.ctrl and copy high-res adjustments
 if [ ${iter} -lt 1 ]; then
-#  sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
-#  sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
-#  sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
-#  sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
-# starting from Argo assim
-  sed -i -e 's/'"doinitxx = .TRUE."'/'"doinitxx = .FALSE."'/g' data.ctrl
-  sed -i -e 's/'"doInitXX = .TRUE."'/'"doInitXX = .FALSE."'/g' data.ctrl
+  sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl
+  sed -i -e 's/'"doInitXX = .FALSE."'/'"doInitXX = .TRUE."'/g' data.ctrl
   sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
   sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.0000000006.data ./xx_aqh.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.effective.0000000006.data ./xx_aqh.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.0000000006.data ./xx_atemp.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.effective.0000000006.data ./xx_atemp.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.0000000006.data ./xx_diffkr.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.effective.0000000006.data ./xx_diffkr.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.0000000006.data ./xx_lwdown.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.effective.0000000006.data ./xx_lwdown.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.0000000006.data ./xx_precip.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.effective.0000000006.data ./xx_precip.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.0000000006.data ./xx_salt.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.effective.0000000006.data ./xx_salt.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.0000000006.data ./xx_swdown.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.effective.0000000006.data ./xx_swdown.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.0000000006.data ./xx_theta.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.effective.0000000006.data ./xx_theta.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.0000000006.data ./xx_uwind.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.effective.0000000006.data ./xx_uwind.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.0000000006.data ./xx_vwind.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.effective.0000000006.data ./xx_vwind.effective.0000000000.data 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.0000000006.meta ./xx_aqh.0000000000.meta
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.effective.0000000006.meta ./xx_aqh.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.0000000006.meta ./xx_atemp.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.effective.0000000006.meta ./xx_atemp.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.0000000006.meta ./xx_diffkr.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.effective.0000000006.meta ./xx_diffkr.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.0000000006.meta ./xx_lwdown.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.effective.0000000006.meta ./xx_lwdown.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.0000000006.meta ./xx_precip.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.effective.0000000006.meta ./xx_precip.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.0000000006.meta ./xx_salt.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.effective.0000000006.meta ./xx_salt.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.0000000006.meta ./xx_swdown.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.effective.0000000006.meta ./xx_swdown.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.0000000006.meta ./xx_theta.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.effective.0000000006.meta ./xx_theta.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.0000000006.meta ./xx_uwind.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.effective.0000000006.meta ./xx_uwind.effective.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.0000000006.meta ./xx_vwind.0000000000.meta 
-  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.effective.0000000006.meta ./xx_vwind.effective.0000000000.meta 
+# starting from Argo assim
+#  sed -i -e 's/'"doinitxx = .TRUE."'/'"doinitxx = .FALSE."'/g' data.ctrl
+#  sed -i -e 's/'"doInitXX = .TRUE."'/'"doInitXX = .FALSE."'/g' data.ctrl
+#  sed -i -e 's/'"doMainPack = .FALSE."'/'"doMainPack = .TRUE."'/g' data.ctrl
+#  sed -i -e 's/'"doMainUnpack = .TRUE."'/'"doMainUnpack = .FALSE."'/g' data.ctrl
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.0000000006.data ./xx_aqh.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.effective.0000000006.data ./xx_aqh.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.0000000006.data ./xx_atemp.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.effective.0000000006.data ./xx_atemp.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.0000000006.data ./xx_diffkr.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.effective.0000000006.data ./xx_diffkr.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.0000000006.data ./xx_lwdown.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.effective.0000000006.data ./xx_lwdown.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.0000000006.data ./xx_precip.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.effective.0000000006.data ./xx_precip.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.0000000006.data ./xx_salt.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.effective.0000000006.data ./xx_salt.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.0000000006.data ./xx_swdown.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.effective.0000000006.data ./xx_swdown.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.0000000006.data ./xx_theta.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.effective.0000000006.data ./xx_theta.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.0000000006.data ./xx_uwind.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.effective.0000000006.data ./xx_uwind.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.0000000006.data ./xx_vwind.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.effective.0000000006.data ./xx_vwind.effective.0000000000.data 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.0000000006.meta ./xx_aqh.0000000000.meta
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_aqh.effective.0000000006.meta ./xx_aqh.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.0000000006.meta ./xx_atemp.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_atemp.effective.0000000006.meta ./xx_atemp.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.0000000006.meta ./xx_diffkr.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_diffkr.effective.0000000006.meta ./xx_diffkr.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.0000000006.meta ./xx_lwdown.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_lwdown.effective.0000000006.meta ./xx_lwdown.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.0000000006.meta ./xx_precip.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_precip.effective.0000000006.meta ./xx_precip.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.0000000006.meta ./xx_salt.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_salt.effective.0000000006.meta ./xx_salt.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.0000000006.meta ./xx_swdown.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_swdown.effective.0000000006.meta ./xx_swdown.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.0000000006.meta ./xx_theta.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_theta.effective.0000000006.meta ./xx_theta.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.0000000006.meta ./xx_uwind.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_uwind.effective.0000000006.meta ./xx_uwind.effective.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.0000000006.meta ./xx_vwind.0000000000.meta 
+#  cp /scratch/08382/shoshi/labsea_runs/assim_argo_MG/run_adhi_it0006/xx_vwind.effective.0000000006.meta ./xx_vwind.effective.0000000000.meta 
 else
 #  mkdir adxxfiles/
   cp ${dirrun_pup}/xx_hires/*000000${optimext}.data .
@@ -178,14 +169,17 @@ EOF
 
 fi
 
+
+sed -i 's/^#[[:space:]]*\(useDiagnostics[[:space:]]*=[[:space:]]*\.TRUE\.,\)/\1/' data.pkg
+
 #--- 7. executable --------
 cp -p $builddir/mitgcmuv_ad .
 
 
 set -x
 date > run.MITGCM.timing
-# mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
-ibrun -n ${nprocs_hr} ./mitgcmuv_ad > stdout
+mpiexec -np ${nprocs_hr} ./mitgcmuv_ad > stdout
+#ibrun -n ${nprocs_hr} ./mitgcmuv_ad > stdout
 # ibrun -npernode 16 ./mitgcmuv_ad > stdout
 date >> run.MITGCM.timing
 cd ..

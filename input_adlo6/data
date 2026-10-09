@@ -134,8 +134,8 @@
 # dumpFreq = 86400.,
 # dumpFreq = 1200.,
 # monitorFreq=2592000.,
- monitorFreq=864000.,
- adjMonitorFreq=864000.,
+ monitorFreq=86400.,
+ adjMonitorFreq=86400.,
  adjDumpFreq=0.,
  &
 
@@ -178,8 +178,8 @@
  hydrogSaltFile  = 'LevCli_salt_240x192_v1_binavg.labsea1979',
  viscAHDfile    ='viscd_192x240.bin',
  viscAHZfile    ='viscz_192x240.bin', 
- viscA4Dfile    ='viscA4D_192x240.bin',
- viscA4Zfile    ='viscA4Z_192x240.bin',
+ viscA4Dfile    ='viscA4D_192x240_bottom_topo.bin',
+ viscA4Zfile    ='viscA4Z_192x240_bottom_topo.bin',
  diffKrFile     ='diffkr_r4_240x192.bin',
  &
 

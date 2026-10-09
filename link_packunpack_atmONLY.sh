@@ -19,13 +19,12 @@ cp ${rootdir}/input_adlo/* .
 ln -s ${rootdir}/input_binaries_lores/bathy_cleaned_96x120.bin .
 ln -s ${rootdir}/input_binaries_lores/LevCli_temp_120x96_linearv3_smooth.labsea1979 .
 ln -s ${rootdir}/input_binaries_lores/LevCli_salt_120x96_linearv3_smooth.labsea1979 .
-ln -s ${rootdir}/input_binaries_lores/viscd_bottom_topo*.bin .
-ln -s ${rootdir}/input_binaries_lores/viscz_bottom_topo*.bin .
+ln -s ${rootdir}/input_binaries_lores/viscd_*bottom_topo*.bin .
+ln -s ${rootdir}/input_binaries_lores/viscz_*bottom_topo*.bin .
 ln -s ${rootdir}/input_binaries_lores/xx_diffkr_effective_it4_r4.bin .
 ln -s ${rootdir}/input_binaries_exf/* .
 ln -s ${rootdir}/input_binaries_hires/ones_64b.bin .
 ln -s ${rootdir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
-ln -s ${rootdir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
 ln -s ${rootdir}/input_binaries_hires/swot*.nc .
 ln -s ${rootdir}/input_binaries_hires/rads_20240101_20240308.nc .
 ln -s ${rootdir}/input_binaries_hires/rads*.nc .

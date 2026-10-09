@@ -33,11 +33,17 @@
  no_slip_sides=.FALSE.,
  no_slip_bottom=.TRUE.,
  viscAz=1.93e-5,
- viscAh=1.E0,
- viscAhGrid=2.E-2,
-# viscAh=1.E2,
+# OLD values
+# viscAh=1.E0,
+# viscAhGrid=2.E-2,
+# NEW ASTE values
+#  viscAr=5.e-4,
+ viscAhGrid = 0.E-4,
+## viscAh=1.E2,
  viscC4Leith=1.5,
  viscC4Leithd=1.5,
+# NEW ASTE
+ viscA4GridMax=0.5,
  diffKhT=0.0,
 # diffKzT=1.46e-5,
  diffKhS=0.0,
@@ -100,35 +106,37 @@
  &PARM03
  pickupStrictlyMatch=.FALSE.,
 # tauCD=172800.,
-# startTime=0.0,
+ startTime=0.0,
+ nIter0=0,
 # nIter0=25920,
- nIter0=38880,
+# nIter0=38880,
 # nTimeSteps=1,
 # 1 day
-# nTimeSteps=276,
+# nTimeSteps=72,
 # 2 days
 # nTimeSteps=564,
 # 5 days
-# nTimeSteps=1440,
-# 11 days
- nTimeSteps=792,
+# nTimeSteps=360,
 # 31 days
-# nTimeSteps=8928,
+# nTimeSteps=2232,
 # 63 days 1/4 - 3/6
-# nTimeSteps=18144,
-# 6 months 
-# nTimeSteps=13248,
+# nTimeSteps=4536,
+# 1 year
+ nTimeSteps=26298,
+# 100 years
+# nTimeSteps=2629800,
  deltaT=1200.0,
  cAdjFreq=0.,
  abEps=0.1,
  forcing_In_AB = .FALSE.,
- pChkptFreq=86400.,
+# pChkptFreq=86400.,
 # pChkptFreq=2592000.,
+ pChkptFreq=31557600.,
  chkptFreq= 0.,
  dumpFreq = 0.,
- monitorFreq=86400.,
- adjMonitorFreq=86400.,
- adjDumpFreq=864000.,
+ monitorFreq=2592000.,
+ adjMonitorFreq=2592000.,
+ adjDumpFreq=2592000.,
  &
 
 # Gridding parameters
@@ -168,8 +176,14 @@
  bathyFile       = 'bathy_cleaned_96x120.bin',
  hydrogThetaFile = 'LevCli_temp_120x96_linearv3_smooth.labsea1979',
  hydrogSaltFile  = 'LevCli_salt_120x96_linearv3_smooth.labsea1979',
- viscAHDfile    ='viscd_bottom_topo.bin',
- viscAHZfile    ='viscz_bottom_topo.bin',
+# OLD 
+# viscAHDfile    ='viscd_bottom_topo.bin',
+# viscAHZfile    ='viscz_bottom_topo.bin',
+ viscAHDfile    ='viscd_x0.1_bottom_topo.bin',
+ viscAHZfile    ='viscz_x0.1_bottom_topo.bin',
+# NEW from ASTE
+# viscAHDfile    ='visc_fromASTE_bottom_topo.bin',
+# viscAHZfile    ='visc_fromASTE_bottom_topo.bin',
  diffKrFile     ='diffkr_r4.bin',
  &
 

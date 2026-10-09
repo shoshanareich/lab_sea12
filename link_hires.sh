@@ -25,12 +25,12 @@ ln -s ${rootdir}/input_binaries_hires/LevCli_salt_480x384_linearv5.labsea1979 .
 ln -s ${rootdir}/input_binaries_exf/* .
 ln -s ${rootdir}/input_binaries_hires/ones_64b.bin .
 ln -s ${rootdir}/input_binaries_hires/ARGO_WO_2024_PFL_D_labsea_splitcost.nc .
-ln -s ${rootdir}/input_binaries_hires/swot_obsfit_cycles_9thru11_labsea_L3v3.nc .
 ln -s ${rootdir}/input_binaries_hires/swot*.nc .
 ln -s ${rootdir}/input_binaries_hires/rads_20240101_20240308.nc .
 ln -s ${rootdir}/input_binaries_hires/rads_* .
 ln -s ${rootdir}/input_binaries_lores/slaerr_03m.bin .
-ln -s ${rootdir}/input_weights_hires/*_jra3q_weights_Jan2024_64b_SMOOTHED_removeboundary.bin .
+ln -s ${rootdir}/input_weights_hires/*_jra3q_weights_2024_deseasonalized.bin .
+ln -s ${rootdir}/input_weights_hires/*_jra3q_weights_2024_deseasonalized_minseason.bin .
 ln -s ${rootdir}/input_weights_hires/*fromASTE_*.bin .
 ln -s ${rootdir}/input_binaries_hires/diffkr_r4_HR.bin .
 cp ${rootdir}/input_binaries_hires/pickup_seaice.0000103680.meta pickup_seaice.0000000001.meta

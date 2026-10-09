@@ -23,14 +23,16 @@ nprocs_hr=16
 jobfile=submit_LR_spinup.sh
 
 #--- set dir ------------
-rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
-datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+#rootdir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+#datadir=/work2/08382/shoshi/stampede3/MITgcm_c69j/lab_sea12/
+rootdir=/home/shoshi/MITgcm_c69j/lab_sea12/
+datadir=/home/shoshi/MITgcm_c69j/lab_sea12/
 scratchdir=/scratch/shoshi/labsea_MG_12/
 
 builddir=${rootdir}/build_lo_fwd
 
 
-workdir_lo=${scratchdir}/run_lo_July24
+workdir_lo=${scratchdir}/run_lo_spinup_viscx0.1_bottomtopo_fromrest
 
 if [ ! -d $workdir_lo ]; then
   mkdir -p $workdir_lo;
@@ -45,8 +47,8 @@ cp ${rootdir}/input_adlo/* .
 ln -s ${datadir}/input_binaries_lores/bathy_cleaned_96x120.bin .
 ln -s ${datadir}/input_binaries_lores/LevCli_temp_120x96_linearv3_smooth.labsea1979 .
 ln -s ${datadir}/input_binaries_lores/LevCli_salt_120x96_linearv3_smooth.labsea1979 .
-ln -s ${datadir}/input_binaries_lores/viscd_bottom_topo*.bin .
-ln -s ${datadir}/input_binaries_lores/viscz_bottom_topo*.bin .
+ln -s ${datadir}/input_binaries_lores/visc*.bin .
+ln -s ${datadir}/input_binaries_lores/visc*.bin .
 ln -s ${datadir}/input_binaries_lores/diffkr_r4.bin .
 ln -s ${datadir}/input_binaries_exf/* .
 ln -s ${datadir}/input_binaries_hires/ones_64b.bin .
@@ -59,12 +61,21 @@ ln -s ${datadir}/input_weights_lores/*fromASTE_*.bin .
 #cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup_seaice.0000025920.data .
 #cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.meta . 
 #cp /scratch/shoshi/labsea_MG_12/run_lo_1yr_jra3q_B/pickup.0000025920.data . 
-cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup_seaice.0000038880.meta . 
-cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup_seaice.0000038880.data .
-cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup.0000038880.meta . 
-cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup.0000038880.data . 
+#cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup_seaice.0000038880.meta . 
+#cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup_seaice.0000038880.data .
+#cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup.0000038880.meta . 
+#cp /scratch/shoshi/labsea_MG_12/run_lo_6mo_Jan24_to_June24/pickup.0000038880.data . 
+#cp /scratch/shoshi/labsea_MG_12/run_lo_spinup_ASTEvisc_100yrs/pickup_seaice.0002628720.meta ./pickup_seaice.0000000001.meta 
+#cp /scratch/shoshi/labsea_MG_12/run_lo_spinup_ASTEvisc_100yrs/pickup_seaice.0002628720.data ./pickup_seaice.0000000001.data
+#cp /scratch/shoshi/labsea_MG_12/run_lo_spinup_ASTEvisc_100yrs/pickup.0002628720.meta ./pickup.0000000001.meta
+#cp /scratch/shoshi/labsea_MG_12/run_lo_spinup_ASTEvisc_100yrs/pickup.0002628720.data ./pickup.0000000001.data 
 mkdir jra3q
-ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+#ln -s /scratch/shared/jra3q/jra3q_*_2024 ./jra3q/
+for year in $(seq 2024 2123); do
+    for file in /scratch/shared/jra3q/jra3q_*_2024; do
+        ln -s "$file" "./jra3q/$(basename "${file%_2024}_$year")"
+    done
+done
 
 #-- swap out data.ctrl and copy high-res adjustments
 sed -i -e 's/'"doinitxx = .FALSE."'/'"doinitxx = .TRUE."'/g' data.ctrl

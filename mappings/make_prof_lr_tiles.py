@@ -19,6 +19,14 @@ fname = sys.argv[4]
 #fname = 'swot_obsfit_cycles_9thru11_labsea_L3v3_PROFILES'
 fnames = [fname, 'ad'+fname]
 
+# --- optional LR tiling / grid overrides (defaults = 1/3 deg: 5x4 tiles) ---
+#     argv 5=npx_lr  6=npy_lr  7=LR grid dir  8=LR grid dir holding hFacC
+npx_lr_arg = int(sys.argv[5]) if len(sys.argv) > 5 else 5
+npy_lr_arg = int(sys.argv[6]) if len(sys.argv) > 6 else 4
+lr_grid    = sys.argv[7]      if len(sys.argv) > 7 else 'grid_lores'
+lr_bathy   = sys.argv[8]      if len(sys.argv) > 8 else 'grid_lores_cleanbathy'
+print(f'LR tiling: npx_lr={npx_lr_arg} npy_lr={npy_lr_arg} lr_grid={lr_grid} lr_bathy={lr_bathy}')
+
 root_dir = DIRROOT
 
 run_dir = rundirs + '/run_adhi_it' + iter + ext + '/'
@@ -59,9 +67,9 @@ for f_path in forward_files:
 hr_all = xr.concat(all_tile_datasets, dim='iPROF').sortby('iPROF')
 
 ### load grid info
-grid_dir_lr = root_dir + 'grid_lores/'
+grid_dir_lr = root_dir + lr_grid + '/'
 grid_lr = xmitgcm.open_mdsdataset(grid_dir_lr, grid_dir=grid_dir_lr, iters=None)
-hfacc_lr = rdmds(root_dir + 'grid_lores_cleanbathy/' + 'hFacC')
+hfacc_lr = rdmds(root_dir + lr_bathy + '/' + 'hFacC')
 grid_lr.hFacC.values = hfacc_lr
 
 xc_lr = rdmds(grid_dir_lr + 'XC')
@@ -71,8 +79,8 @@ ny, nx = xc_lr.shape
 # The HR tiling (32x32) does not enter this script 
 tile_size = 24
 
-npx_lr = 5
-npy_lr = 4
+npx_lr = npx_lr_arg
+npy_lr = npy_lr_arg
 
 ### Build lr_ocean_map
 surface_mask = hfacc_lr[0, :, :]

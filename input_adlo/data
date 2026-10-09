@@ -125,8 +125,8 @@
 # dumpFreq = 86400.,
 # dumpFreq = 1200.,
 # monitorFreq=2592000.,
- monitorFreq=864000.,
- adjMonitorFreq=864000.,
+ monitorFreq=86400.,
+ adjMonitorFreq=86400.,
  adjDumpFreq=0.,
  &
 
@@ -167,8 +167,8 @@
  bathyFile       = 'bathy_cleaned_96x120.bin',
  hydrogThetaFile = 'LevCli_temp_120x96_linearv3_smooth.labsea1979',
  hydrogSaltFile  = 'LevCli_salt_120x96_linearv3_smooth.labsea1979',
- viscAHDfile    ='viscd_bottom_topo.bin',
- viscAHZfile    ='viscz_bottom_topo.bin',
+ viscAHDfile    ='viscd_x0.001_bottom_topo.bin',
+ viscAHZfile    ='viscz_x0.001_bottom_topo.bin',
  diffKrFile     ='diffkr_r4.bin',
  &
 
