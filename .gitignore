@@ -16,7 +16,38 @@
 mappings/__pycache__/
 !mappings/*.py
 
+# Allow analysis/plotting scripts, but not caches
+!analysis_scripts/
+analysis_scripts/__pycache__/
+!analysis_scripts/*.py
+
 # ignore some sverdrup stuff
 submit_HR_32x32.sh
 submit_HR_48x48.sh
 submit_LR6_spinup.sh
+
+# standalone sverdrup job files (hardcoded paths, not machine-independent)
+submit_HR_10days.sh
+submit_HR_10days_coldstart.sh
+submit_HR_10days_sigmaL.sh
+submit_HR_21days.sh
+submit_HR_adj_swotargo.sh
+submit_HRfromMG_10days.sh
+submit_LR6_10days.sh
+submit_LR_10days.sh
+submit_LR_fwd.sh
+submit_LR_spinup_viscx1.sh
+submit_LR_spinup_viscx1_v2.sh
+submit_MG6_10days.sh
+submit_MG_10days.sh
+submit_MG_10days_lrcost.sh
+submit_MG_10days_lrcostx16.sh
+submit_MG_10days_newinterp.sh
+submit_MG_10days_sigmaL.sh
+submit_MG_10days_sigmaL_viscx0.001.sh
+submit_MG_10days_sigmaL_viscx0.01.sh
+submit_MG_10days_sigmaL_viscx0.1.sh
+submit_MG_10days_sigmaL_viscx0.25.sh
+submit_MG_10days_xxmult16.sh
+submit_MG_21days.sh
+submit_MG_63days.sh
