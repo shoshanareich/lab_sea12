@@ -1,12 +1,11 @@
-# lab_sea12 — multi-grid adjoint SWOT assimilation in the Labrador Sea
+# Multi-grid adjoint SWOT assimilation in the Labrador Sea
 
 Assimilation of **SWOT** sea-surface-height observations (plus Argo T/S profiles) into a
 regional **Labrador Sea** configuration of **MITgcm** (checkpoint **c69j**), using the ECCO
 framework (`pkg/ctrl`, `pkg/ecco`, `pkg/obsfit`, `pkg/profiles`) and a TAF-generated adjoint.
 
 SWOT resolves very small scales, so the forward model has to run at high resolution. An
-adjoint at that resolution is expensive, and the eventual target (global 1/12°) puts it out
-of reach. So this repo uses a **multi-grid (MG) adjoint**:
+adjoint at that resolution is expensive, so this repo uses a **multi-grid (MG) adjoint**:
 
 | | role | resolution | grid | `deltaT` | procs |
 |---|---|---|---|---|---|
@@ -14,7 +13,7 @@ of reach. So this repo uses a **multi-grid (MG) adjoint**:
 | **LR** (`adlo`) | adjoint model | 1/3° | 120 × 96 × 21 | 1200 s | 16 |
 
 The two are joined by MITgcm's **divided adjoint (DivA)** plus a local modification,
-`MULTISCALE_COUPLING_TAPES`. The HR forward run writes its checkpoint tapes already
+`MULTISCALE_COUPLING_TAPES` that coarsens the HR checkpoints (tapes) to the LR. The HR forward run writes its checkpoint tapes already
 **coarsened** by `MSfacX × MSfacY = 4 × 4` blocks, and the LR adjoint reads them as its
 reference trajectory. The optimizer and the control vector live at LR. Control adjustments
 are prolongated back to HR for the next outer iteration.
